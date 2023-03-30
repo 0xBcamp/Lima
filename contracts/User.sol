@@ -8,6 +8,12 @@ contract User is ERC721 {
     using Counters for Counters.Counter;
     using Strings for uint256;
 
+    event UserNFTMinted(
+        address indexed owner,
+        uint256 indexed tokenId,
+        string tokenURI
+    );
+
     Counters.Counter private _tokenIds;
     mapping(uint256 => string) private _tokenURIs;
 
@@ -23,16 +29,29 @@ contract User is ERC721 {
         _mint(msg.sender, newItemId);
         _setTokenURI(newItemId, _tokenURI);
 
+        emit UserNFTMinted(msg.sender, newItemId, _tokenURI);
+
         return newItemId;
     }
 
-    function _setTokenURI(uint256 tokenId, string memory _tokenURI) internal virtual {
-        require(_exists(tokenId), "ERC721URIStorage: URI set of nonexistent token");
+    function _setTokenURI(
+        uint256 tokenId,
+        string memory _tokenURI
+    ) internal virtual {
+        require(
+            _exists(tokenId),
+            "ERC721URIStorage: URI set of nonexistent token"
+        );
         _tokenURIs[tokenId] = _tokenURI;
     }
 
-    function tokenURI(uint256 tokenId) public view virtual override returns (string memory) {
-        require(_exists(tokenId), "ERC721URIStorage: URI query for nonexistent token");
+    function tokenURI(
+        uint256 tokenId
+    ) public view virtual override returns (string memory) {
+        require(
+            _exists(tokenId),
+            "ERC721URIStorage: URI query for nonexistent token"
+        );
 
         string memory _tokenURI = _tokenURIs[tokenId];
         return _tokenURI;
