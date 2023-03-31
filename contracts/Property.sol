@@ -170,6 +170,14 @@ contract Property is ERC1155 {
         return _properties[propertyId];
     }
 
+    function isValidProperty(uint256 propertyId) public view returns (bool) {
+        if (propertyId <= _propertyIds.current()) {
+            return true;
+        }
+
+        return false;
+    }
+
     function getShares(uint256 propertyId, address owner) public view returns (uint256) {
         return _propertyShares[propertyId][owner];
     }

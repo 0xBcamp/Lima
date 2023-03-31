@@ -77,5 +77,25 @@ contract Booking is ERC721 {
         return bookingIdToPropertyId[_bookingId];
     }
 
+    function isBookingCompleted(address user, uint256 propertyId, uint256 bookingId) public view returns (bool) {
+        // Check if the given bookingId exists and is associated with the propertyId
+        if (bookingIdToPropertyId[bookingId] != propertyId) {
+            return false;
+        }
+
+        // Check if the user is the renter in the booking
+        BookingInfo memory booking = _bookings[bookingId];
+        if (booking.renter != user) {
+            return false;
+        }
+
+        // Check if the booking endDate is in the past
+        if (booking.endDate < block.timestamp) {
+            return true;
+        }
+
+        return false;
+    }
+
     event BookingCreated(uint256 indexed bookingId, uint256 indexed propertyId, address indexed renter, uint256 startDate, uint256 endDate);
 }
