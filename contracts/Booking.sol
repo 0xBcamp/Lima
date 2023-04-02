@@ -5,6 +5,7 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "./User.sol";
 import "./Property.sol";
 import "./Escrow.sol";
+import "./interfaces/IRewards.sol";
 
 contract Booking is ERC721 {
     using Counters for Counters.Counter;
@@ -24,6 +25,7 @@ contract Booking is ERC721 {
     User userContract;
     Property propertyContract;
     Escrow escrowContract;
+    IRewards rewardsContract;
     address public usdcTokenAddress;
 
     modifier onlyRegisteredUser() {
@@ -33,10 +35,11 @@ contract Booking is ERC721 {
     }
 
 
-    constructor(address _userContractAddress, address _propertyContractAddress, address _escrowContractAddress, address _usdcTokenAddress) ERC721("BookingToken", "BKG") {
+    constructor(address _userContractAddress, address _propertyContractAddress, address _escrowContractAddress, address _rewardsContractAddress, address _usdcTokenAddress) ERC721("BookingToken", "BKG") {
         userContract = User(_userContractAddress);
         propertyContract = Property(_propertyContractAddress);
         escrowContract = Escrow(_escrowContractAddress);
+        rewardsContract = IRewards(_rewardsContractAddress);
         usdcTokenAddress = _usdcTokenAddress;
     }
 
@@ -60,12 +63,16 @@ contract Booking is ERC721 {
         // Calculate required payment amount
         uint256 totalPrice = propertyContract.getTotalPriceForDates(_propertyId, _startDate, _endDate);
 
+        // Calculate platform fees amount (5% of totalPrice)
+        uint256 platformFeesAmount = totalPrice * 5 / 100;
+
         // Deposit the funds into the escrow contract
         escrowContract.deposit(bookingId, totalPrice);
 
         // Transfer USDC from the user to the escrow contract
         IERC20 usdcToken = IERC20(usdcTokenAddress); 
         usdcToken.transferFrom(msg.sender, address(escrowContract), totalPrice);
+        usdcToken.transferFrom(msg.sender, address(rewardsContract), platformFeesAmount); // Transfer the rewardsAmount to the rewards contract
 
         // Emit a booking event
         emit BookingCreated(bookingId, _propertyId, msg.sender, _startDate, _endDate);
@@ -75,6 +82,13 @@ contract Booking is ERC721 {
 
     function getPropertyIdByBookingId(uint256 _bookingId) public view returns (uint256) {
         return bookingIdToPropertyId[_bookingId];
+    }
+
+    function getRenterByBookingId(uint256 _bookingId) public view returns (address) {
+        require(_bookingId <= _bookingIds.current(), "Booking does not exist");
+        
+        // Retrieve the renter from the booking struct
+        return _bookings[_bookingId].renter;
     }
 
     function isBookingCompleted(address user, uint256 propertyId, uint256 bookingId) public view returns (bool) {

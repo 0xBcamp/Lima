@@ -3,10 +3,12 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "./Property.sol";
 import "./Booking.sol";
+import "./interfaces/IRewards.sol";
 
 contract Escrow {
     Property propertyContract;
     Booking bookingContract;
+    IRewards rewardsContract;
     IERC20 usdcToken;
 
     // A mapping that stores the deposited amount (in USDC tokens) for each booking ID
@@ -19,9 +21,10 @@ contract Escrow {
     // Value: A boolean flag indicating if the funds have been released (true) or not (false)
     mapping(uint256 => bool) public isBookingPaid;
 
-    constructor(address _propertyContractAddress, address _bookingContractAddress, address _usdcTokenAddress) {
+    constructor(address _propertyContractAddress, address _bookingContractAddress, address _rewardsContractAddress, address _usdcTokenAddress) {
         propertyContract = Property(_propertyContractAddress);
         bookingContract = Booking(_bookingContractAddress);
+        rewardsContract = IRewards(_rewardsContractAddress);
         usdcToken = IERC20(_usdcTokenAddress);
     }
 
@@ -55,8 +58,11 @@ contract Escrow {
         // Get the deposited amount for the given booking ID
         uint256 amount = bookingAmounts[bookingId];
 
+        // Calculate the rewards amount (5% of the deposited amount)
+        uint256 platformFeesAmount = (amount * 5) / 100;
+
         // Ensure there is a booking amount to release
-        require(amount > 0, "No booking amount to release");
+        require(amount > platformFeesAmount, "No booking amount to release after rewards deduction");
 
         // Get the property ID associated with the booking ID
         uint256 propertyId = bookingContract.getPropertyIdByBookingId(bookingId);
@@ -68,7 +74,8 @@ contract Escrow {
         require(propertyOwner != address(0), "Property owner not found");
 
         // Transfer USDC tokens from the escrow contract to the property owner
-        usdcToken.transfer(propertyOwner, amount);
+        usdcToken.transfer(propertyOwner, amount - platformFeesAmount); // Subtract the platformFeesAmount from the amount
+        usdcToken.transfer(address(rewardsContract), platformFeesAmount); // Transfer the platformFeesAmount to the rewards contract
 
         // Mark the booking amount as released
         isBookingPaid[bookingId] = true;
