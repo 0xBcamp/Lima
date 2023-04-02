@@ -84,7 +84,14 @@ In the rewards section, we initially planned to implement a native token to dist
 
 As a result, we have devised a model that emphasizes rewarding user participation rather than token purchases. This ensures that profits are fairly distributed among active users of the system. Users will be able to earn points based on a 3-month rolling average, calculated through their engagement in various activities.
 
-These activities include registering a profile, becoming a host, making bookings, reviewing stays, responding to guest messages, and more. We will continue to introduce additional ways for users to earn points, fostering an inclusive and decentralized ecosystem that benefits all platform participants.
+These activities include, but not limited to:
+- registering a profile
+- becoming a host
+- making bookings
+- reviewing stays
+- responding to guest messages
+
+We will continue to introduce additional ways for users to earn points, fostering an inclusive and decentralized ecosystem that benefits all platform participants.
 
 #### What is a 3-month rolling avarage?
 The 3-month rolling average model positively impacts our platform by encouraging consistent user engagement and promoting fair rewards distribution. By focusing on user participation over a **recent three-month period**, the platform can better recognize and reward active users, fostering a sense of community and loyalty.
