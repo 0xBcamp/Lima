@@ -80,7 +80,7 @@ The Booking contract manages bookings for properties. It enables users to create
 The Rewards contract manages the distribution of rewards for users based on a rolling 3-month period. It allows users to withdraw their rewards in USDC and tracks the points earned by users and the total rewards allocated for each month. Users can add points to their account and withdraw rewards, while the contract ensures that rewards are distributed fairly based on the points earned by all users.
 
 ### Side note
-In the rewards section, we initially planned to implement a native token to distribute platform profits among token holders. However, our primary focus is on creating a truly decentralized platform. After attending Recbeards' talk last week about decentralization, we decided to reevaluate our approach.
+In the rewards section, we initially planned to implement a native token to distribute platform profits among token holders. However, our primary focus is on creating a truly decentralized platform. After attending Redbeards' talk last week about decentralization, we decided to reevaluate our approach.
 
 As a result, we have devised a model that emphasizes rewarding user participation rather than token purchases. This ensures that profits are fairly distributed among active users of the system. Users will be able to earn points based on a 3-month rolling average, calculated through their engagement in various activities.
 
