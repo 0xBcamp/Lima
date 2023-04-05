@@ -18,16 +18,18 @@ contract User is ERC721 {
     mapping(uint256 => string) private _tokenURIs;
 
     uint256 public myCounter;
-    mapping(address => uint256) public payments;
 
     constructor() ERC721("UserNFT", "UNFT") {}
 
     function mintUserNFT(string memory _tokenURI) public returns (uint256) {
+        //require(1 == 2, "Wrong TokenURI");
         _tokenIds.increment();
         uint256 newItemId = _tokenIds.current();
 
         _mint(msg.sender, newItemId);
         _setTokenURI(newItemId, _tokenURI);
+
+        //Reward user point for creating a profile.
 
         emit UserNFTMinted(msg.sender, newItemId, _tokenURI);
 

@@ -70,6 +70,8 @@ contract Property is ERC1155 {
             _propertyShares[newPropertyId][msg.sender] = TOTAL_SHARES;
         }
 
+        //Rewards host user points
+
         emit PropertyRegistered(newPropertyId, msg.sender, name, location, uri, pricePerNightUSD);
 
         return newPropertyId;

@@ -5,6 +5,7 @@ import { ISolContract } from '../../models/solContract';
 
 interface SolContractState {
   contracts?: ISolContract[];
+  selectedContract?: ISolContract;
   isLoadingContracts: boolean;
 }
 
@@ -20,9 +21,12 @@ const solContractSlice = createSlice({
     setSolContracts: (state, action) => {
       state.contracts = [...action.payload];
       state.isLoadingContracts = false;
+    },
+    setSelectedContract: (state, action) => {
+      state.selectedContract = {...action.payload};
     }
   },
 });
 
-export const { setSolContracts } = solContractSlice.actions;
+export const { setSolContracts, setSelectedContract } = solContractSlice.actions;
 export default solContractSlice.reducer;

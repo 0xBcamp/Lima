@@ -41,6 +41,8 @@ contract Messaging {
         // Add the message to the mapping.
         _bookingMessages[bookingId].push(newMessage);
 
+        //Reward user points to host for replying to guest
+
         // Emit the MessageSent event.
         emit MessageSent(bookingId, msg.sender, content, block.timestamp);
     }

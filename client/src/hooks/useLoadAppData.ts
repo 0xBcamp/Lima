@@ -27,7 +27,6 @@ const useLoadAppData = () => {
       if (provider) {
         // Set initial block number
         const block = await provider.getBlock('latest');
-        console.log('block :>> ', block);
         const blockNumber = await provider.getBlockNumber();
         dispatch(setBlock({blockNumber: blockNumber, blockTimestamp: block?.timestamp}));
 

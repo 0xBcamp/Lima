@@ -35,12 +35,15 @@ contract Booking is ERC721 {
     }
 
 
-    constructor(address _userContractAddress, address _propertyContractAddress, address _escrowContractAddress, address _rewardsContractAddress, address _usdcTokenAddress) ERC721("BookingToken", "BKG") {
+    constructor(address _usdcTokenAddress) ERC721("BookingToken", "BKG") {
+        usdcTokenAddress = _usdcTokenAddress;
+    }
+
+    function setContracts(address _userContractAddress, address _propertyContractAddress, address _escrowContractAddress, address _rewardsContractAddress) external {
         userContract = User(_userContractAddress);
         propertyContract = Property(_propertyContractAddress);
         escrowContract = Escrow(_escrowContractAddress);
         rewardsContract = IRewards(_rewardsContractAddress);
-        usdcTokenAddress = _usdcTokenAddress;
     }
 
     function createBooking(uint256 _propertyId, uint256 _startDate, uint256 _endDate) public payable onlyRegisteredUser {

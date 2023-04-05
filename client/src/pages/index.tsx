@@ -2,15 +2,18 @@ import Head from 'next/head'
 import Image from 'next/image'
 import { Inter } from 'next/font/google'
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { useEffect } from 'react';
-import { setAccounts, setProvider, setSelectedAccount } from '../../store/slices/accountSlice';
-import { getAccounts } from '../../services/accountService';
-import { ethers } from 'ethers';
+import { ContractsEnum } from '@/enums/ContractsEnum';
+import { NoContractSelected } from '@/components/NoContractSelected';
+import { PagesEnum } from '@/enums/PagesEnum';
+import { OverviewPage } from '@/components/pages/OverviewPage';
+import { GraphsPage } from '@/components/pages/GraphsPage';
 
 
 const inter = Inter({ subsets: ['latin'] })
 
 export default function Home() {
+  const navigationPage = useAppSelector((state) => state.navigation.page);
+
   return (
     <>
       <Head>
@@ -21,6 +24,8 @@ export default function Home() {
       </Head>
       <main>
         <div className=''>
+          {navigationPage === PagesEnum.Overview && <OverviewPage />}
+          {navigationPage === PagesEnum.Graphs && <GraphsPage />}
         </div>
       </main>
     </>

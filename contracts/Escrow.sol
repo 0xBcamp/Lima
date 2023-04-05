@@ -21,11 +21,14 @@ contract Escrow {
     // Value: A boolean flag indicating if the funds have been released (true) or not (false)
     mapping(uint256 => bool) public isBookingPaid;
 
-    constructor(address _propertyContractAddress, address _bookingContractAddress, address _rewardsContractAddress, address _usdcTokenAddress) {
+    constructor(address _usdcTokenAddress) {
+        usdcToken = IERC20(_usdcTokenAddress);
+    }
+
+    function setContracts(address _propertyContractAddress, address _bookingContractAddress, address _rewardsContractAddress) external {
         propertyContract = Property(_propertyContractAddress);
         bookingContract = Booking(_bookingContractAddress);
         rewardsContract = IRewards(_rewardsContractAddress);
-        usdcToken = IERC20(_usdcTokenAddress);
     }
 
     /**
@@ -72,6 +75,8 @@ contract Escrow {
 
         // Ensure the property owner's address is valid
         require(propertyOwner != address(0), "Property owner not found");
+
+        //Reward user points to guest and host 
 
         // Transfer USDC tokens from the escrow contract to the property owner
         usdcToken.transfer(propertyOwner, amount - platformFeesAmount); // Subtract the platformFeesAmount from the amount
