@@ -1,6 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { EvmEvent, IEvmEvent, IUserRegisteredEvent } from '../../../models/evmEvents';
+import { EvmEvent, IEvmEvent, IPropertyRegisteredEvent, IUserRegisteredEvent } from '../../../models/evmEvents';
 import { IUser, User } from '../../../models/user';
+import { IProperty, Property } from '../../../models/property';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     if (req.method === 'POST') {
@@ -32,6 +33,32 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 await newUser.save();
             }
 
+            if (eventName === "PropertyRegistered") {
+                const data: IPropertyRegisteredEvent = eventData
+
+                const user = await User.findOne({ owner: data.owner });
+                if (!user) {
+                    console.log("User not found!");
+                    return;
+                }
+
+                const newProperty: IProperty = new Property({
+                    propertyId: data.propertyId,
+                    owner: data.owner,
+                    location: data.location,
+                    country: data.country,
+                    uri: data.uri,
+                    pricePerNight: data.pricePerNight,
+                    user: user._id,
+                });
+
+                await newProperty.save();
+
+                // Update the user with the new property reference
+                user.properties.push(newProperty._id);
+                await user.save();
+            }
+
             return res.status(201).json(newEvent);
         } catch (error) {
             console.error(error);
@@ -41,7 +68,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     else if (req.method === 'GET') {
         try {
             // Fetch all events from the database
-            const events: IEvmEvent[] = await EvmEvent.find().sort({blockNumber: -1});
+            const events: IEvmEvent[] = await EvmEvent.find().sort({ blockNumber: -1 });
 
             // Return the events in the response
             return res.status(200).json(events);

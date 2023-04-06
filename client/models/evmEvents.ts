@@ -18,6 +18,15 @@ export interface IUserRegisteredEvent {
   lastName: string;
 }
 
+export interface IPropertyRegisteredEvent {
+  propertyId: string;
+  owner: string;
+  location: string;
+  country: string;
+  uri: string;
+  pricePerNight: string;
+}
+
 const evmEventSchema = new Schema<IEvmEvent>(
   {
     eventName: {

@@ -22,17 +22,19 @@ export const OverviewPage = () => {
                 <div className='bg-gray-50 text-lg p-1 shadow'>Users</div>
                 {users.length > 0 &&
                     <>
-                        <div className='p-1 hover:bg-gray-50 grid grid-cols-3'>
-                            <div>Name</div>
-                            <div>Wallet</div>
-                            <div>TokenId</div>
+                        <div className='p-1 hover:bg-gray-50 grid grid-cols-5 text-sm font-semibold'>
+                            <div className='col-span-1'>Name</div>
+                            <div className='col-span-2'>Wallet</div>
+                            <div className='col-span-1'>TokenId</div>
+                            <div className='col-span-1'># Properties</div>
                         </div>
                         {users.map((user, index) => {
                             return (
-                                <div className='p-1 hover:bg-gray-50 grid grid-cols-3'>
-                                    <div>{user.firstName} {user.lastname}</div>
-                                    <div>{user.owner} </div>
-                                    <div>{user.tokenId} </div>
+                                <div key={index} className='p-1 hover:bg-gray-50 grid grid-cols-5 text-sm'>
+                                    <div className='col-span-1'>{user.firstName} {user.lastname}</div>
+                                    <div className='col-span-2 truncate overflow-hidden'>{user.owner}</div>
+                                    <div className='col-span-1'>{user.tokenId}</div>
+                                    <div className='col-span-1'>{user.properties.length}</div>
                                 </div>
                             )
                         })}

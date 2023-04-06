@@ -13,8 +13,8 @@ contract Property is ERC1155 {
     struct PropertyInfo {
         uint256 propertyId;
         address owner;
-        string name;
         string location;
+        string country;
         string uri;
         bool fractionalOwnershipEnabled;
         uint256 totalShares;
@@ -25,8 +25,8 @@ contract Property is ERC1155 {
     event PropertyRegistered(
         uint256 indexed propertyId,
         address indexed owner,
-        string name,
         string location,
+        string country,
         string uri,
         uint256 pricePerNight
     );
@@ -49,7 +49,7 @@ contract Property is ERC1155 {
 
     constructor() ERC1155("") {}
 
-    function registerProperty(string memory name, string memory location, string memory uri, uint256 priceUSD, uint256 pricePerNightUSD, bool enableFractional) public returns (uint256) {
+    function registerProperty(string memory location, string memory country, string memory uri, uint256 priceUSD, uint256 pricePerNightUSD, bool enableFractional) public returns (uint256) {
         _propertyIds.increment();
         uint256 newPropertyId = _propertyIds.current();
 
@@ -58,7 +58,7 @@ contract Property is ERC1155 {
         _properties[newPropertyId] = PropertyInfo({
             propertyId: newPropertyId,
             owner: msg.sender,
-            name: name,
+            country: country,
             location: location,
             uri: uri,
             fractionalOwnershipEnabled: enableFractional,
@@ -73,7 +73,7 @@ contract Property is ERC1155 {
 
         //Rewards host user points
 
-        emit PropertyRegistered(newPropertyId, msg.sender, name, location, uri, pricePerNightUSD);
+        emit PropertyRegistered(newPropertyId, msg.sender, location, country, uri, pricePerNightUSD);
 
         return newPropertyId;
     }

@@ -31,7 +31,7 @@ export default function App({ Component, pageProps }: AppProps) {
             </div>
           </div>
           <SidePanel />
-          <ToastContainer position={toast.POSITION.TOP_CENTER}/>
+          <ToastContainer position={toast.POSITION.TOP_RIGHT}/>
       </EthersContext.Provider>
     </Provider>
   );
