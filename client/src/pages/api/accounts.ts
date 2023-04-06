@@ -119,13 +119,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   await connectToDatabase();
 
   if (req.method === 'GET') {
-    let accounts: IAccount[] = await Account.find({});
+    let accounts: IAccount[] = await Account.find({}).sort({index: 1});
     if (accounts.length < 20) {
       await Account.deleteMany({});
 
       await Account.insertMany(accountsJson);
 
-      accounts = await Account.find({});
+      accounts = await Account.find({}).sort({index: 1});
     }
 
 

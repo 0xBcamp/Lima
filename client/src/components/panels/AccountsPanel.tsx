@@ -1,19 +1,11 @@
 // Import the required dependencies
 import React from 'react';
 import { useAppDispatch, useAppSelector } from '../../../store/hooks';
-import { setSelectedAccount } from '../../../store/slices/accountSlice';
-import SidePanel from '../SidePanel';
 import Image from 'next/image';
 import defaultProfilePicture from '../../../public/profile.jpg';
 import { setSidePanelSelectedAccount } from '../../../store/slices/sidePanelSlice';
 
-// interface AccountsPanelProps {
-//     onAccountSelected?: () => void;
-// }
-
-
 const AccountsPanel: React.FC = () => {
-
     const dispatch = useAppDispatch();
 
     const accounts = useAppSelector((state) => state.account.accounts);

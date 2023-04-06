@@ -6,6 +6,7 @@ import SidePanel from '../SidePanel';
 import Image from 'next/image';
 import defaultProfilePicture from '../../../public/profile.jpg';
 import EthersContext from '../../../context/EthersContext';
+import { FC_Button } from '../form-controls/FC_Button';
 
 const BlockchainPanel = () => {
     const { provider } = useContext(EthersContext);
@@ -15,7 +16,17 @@ const BlockchainPanel = () => {
     const blockchain = useAppSelector((state) => state.blockchain);
 
     return (
-        <div>BlockchainPanel</div>
+        <div className='flex flex-col'>
+            <div>
+                <FC_Button 
+                    text='Reset' 
+                    customClassName='bg-red-700 hover:bg-red-500' 
+                    onClick={() => {
+                        
+                    }}    
+                />
+                </div>
+        </div>
         // <SidePanel isOpen={isOpen} onClose={onClose} title="Blockchain">
         //     <div className='flex flex-col'>
         //         <div className='flex'>

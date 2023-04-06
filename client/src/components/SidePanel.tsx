@@ -7,6 +7,7 @@ import { closeSidePanel } from '../../store/slices/sidePanelSlice';
 import AccountsPanel from './panels/AccountsPanel';
 import { PanelsEnum } from '@/enums/PanelsEnum';
 import ContractsPanel from './panels/ContractsPanel';
+import BlockchainPanel from './panels/BlockchainPanel';
 
 const renderContentComponent = (contentComponent: string, onClose: () => void) => {
   switch (contentComponent) {
@@ -14,6 +15,8 @@ const renderContentComponent = (contentComponent: string, onClose: () => void) =
       return (<AccountsPanel />);
     case PanelsEnum.ContractsPanel:
       return (<ContractsPanel />);
+    case PanelsEnum.BlockchainPanel:
+      return (<BlockchainPanel />);
     default:
       return null;
   }

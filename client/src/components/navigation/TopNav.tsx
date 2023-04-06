@@ -11,7 +11,7 @@ import useContractEvents from '@/hooks/useContractEvents';
 
 export const TopNav = () => {
     const dispatch = useAppDispatch();
-    
+
     const { provider } = useContext(EthersContext);
     useLoadAppData();
     useContractEvents();
@@ -28,7 +28,7 @@ export const TopNav = () => {
             dispatch(closeSidePanel({ contentComponent: PanelsEnum.AccountsPanel }));
         }
     }, [panelSelectedAccount?.selectedAccount]);
-    
+
     useEffect(() => {
         (async () => {
             if (provider && selectedAccount) {
@@ -47,16 +47,6 @@ export const TopNav = () => {
                         HomeChain
                     </div>
                     <ul className="flex items-center space-x-4">
-                        {/* <li>
-                            <a href="/" className="text-white">
-                                Home
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#" className="text-white">
-                                Create
-                            </a>
-                        </li> */}
                         <li>
                             <div className="p-2 flex flex-col">
                                 <div className='text-center'>Date</div>
@@ -64,7 +54,13 @@ export const TopNav = () => {
                             </div>
                         </li>
                         <li>
-                            <div onClick={() => console.log("TODO: Open blockchain panel")} className="p-2 flex flex-col hover:cursor-pointer hover:bg-blue-400">
+                            <div onClick={() => {
+                                dispatch(openSidePanel({
+                                    title: 'Blockchain',
+                                    contentComponent: PanelsEnum.BlockchainPanel,
+                                    sourceId: `TopNav`
+                                }));
+                            }} className="p-2 flex flex-col hover:cursor-pointer hover:bg-blue-400">
                                 <div className='text-center'>Block Number</div>
                                 <div className='text-sm text-center'>{`${(blockchain?.blockNumber || blockchain?.blockNumber === 0) ? blockchain.blockNumber : "-"}`}</div>
                             </div>

@@ -4,7 +4,7 @@ import { getAccounts } from '../../services/accountService';
 import { getSolContracts } from '../../services/solContractService';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { setAccounts, setSelectedAccount } from '../../store/slices/accountSlice';
-import { setBlock, setBlocknumber } from '../../store/slices/blockchainSlice';
+import { setBlock } from '../../store/slices/blockchainSlice';
 import { setSolContracts } from '../../store/slices/solContractSlice';
 
 const useLoadAppData = () => {
@@ -12,6 +12,7 @@ const useLoadAppData = () => {
   const { provider } = useContext(EthersContext);
 
   const accounts = useAppSelector((state) => state.account.accounts);
+  const selectedAccount = useAppSelector((state) => state.account.selectedAccount);
   const blockchain = useAppSelector((state) => state.blockchain);
 
   const dispatch = useAppDispatch();
@@ -56,10 +57,11 @@ const useLoadAppData = () => {
   }, [blockchain?.blockNumber]);
 
   useEffect(() => {
-    if (accounts?.length > 0) {
+    if (accounts?.length > 0 && !selectedAccount) {
       dispatch(setSelectedAccount(accounts[0]))
     }
   }, [accounts]);
+
 };
 
 export default useLoadAppData;

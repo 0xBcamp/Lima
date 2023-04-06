@@ -1,11 +1,6 @@
-// Import the required dependencies
 import React from 'react';
 import { useAppDispatch, useAppSelector } from '../../../store/hooks';
-import { setSelectedAccount } from '../../../store/slices/accountSlice';
-import SidePanel from '../SidePanel';
-import Image from 'next/image';
-import defaultProfilePicture from '../../../public/profile.jpg';
-import { setSidePanelSelectedAccount, setSidePanelSelectedContract } from '../../../store/slices/sidePanelSlice';
+import { setSidePanelSelectedContract } from '../../../store/slices/sidePanelSlice';
 
 const ContractsPanel: React.FC = () => {
 

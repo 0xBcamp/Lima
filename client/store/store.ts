@@ -5,6 +5,7 @@ import blockchainReducer from './slices/blockchainSlice';
 import solContractReducer from './slices/solContractSlice';
 import sidePanelReducer from './slices/sidePanelSlice';
 import navigationReducer from './slices/navigationSlice';
+import evmEventReducer from './slices/evmEventSlice';
 
 const store = configureStore({
 	reducer: {
@@ -13,7 +14,8 @@ const store = configureStore({
 		sidePanel: sidePanelReducer,
 		solContract: solContractReducer,
 		user: userReducer,
-		navigation: navigationReducer
+		navigation: navigationReducer,
+		evmEvent: evmEventReducer
 	},
 });
 

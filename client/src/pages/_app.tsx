@@ -11,7 +11,7 @@ import { AbiEvents } from '@/components/abi/AbiEvents';
 import SidePanel from '@/components/SidePanel';
 import '@fortawesome/fontawesome-svg-core/styles.css';
 import 'react-toastify/dist/ReactToastify.css';
-import { ToastContainer } from 'react-toastify';
+import { ToastContainer, toast } from 'react-toastify';
 
 const jsonRpcProvider = new ethers.JsonRpcProvider(process.env.RPC_URL);
 
@@ -31,7 +31,7 @@ export default function App({ Component, pageProps }: AppProps) {
             </div>
           </div>
           <SidePanel />
-          <ToastContainer />
+          <ToastContainer position={toast.POSITION.TOP_CENTER}/>
       </EthersContext.Provider>
     </Provider>
   );

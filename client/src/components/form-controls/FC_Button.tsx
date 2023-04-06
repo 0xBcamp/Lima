@@ -13,13 +13,12 @@ export const FC_Button = ({
   customClassName = '',
   ...props
 }: IFC_ButtonProps) => {
-  // const baseStyle = `bg-blue-500 hover:bg-blue-600 text-white  py-1 px-2 rounded-md transition duration-150 ease-in-out`;
-  const baseStyle = `bg-blue-500 hover:bg-blue-600 text-white px-2 rounded-md transition duration-150 ease-in-out`;
+  const baseStyle = `bg-blue-500 hover:bg-blue-600 text-white px-2 py-1 transition duration-150 ease-in-out`;
   const classNames = `${baseStyle} ${customClassName}`;
-  //<FontAwesomeIcon icon={faPaperPlane} />
+
   return (
     <button className={classNames} {...props}>
-      <FontAwesomeIcon icon={faPaperPlane} />
+      {text}
     </button>
   );
 };

@@ -52,7 +52,7 @@ const sidePanelSlice = createSlice({
         setSidePanelSelectedAccount: (state, action) => {
             const panelIndex = state.panels.findIndex((panel) => panel.contentComponent === PanelsEnum.AccountsPanel);
             if (panelIndex !== -1) {
-                state.panels[panelIndex] = { ...state.panels[panelIndex], selectedContract: action.payload.selectedAccount };
+                state.panels[panelIndex] = { ...state.panels[panelIndex], selectedAccount: action.payload.selectedAccount };
             }
         },
         setSidePanelSelectedContract: (state, action) => {
