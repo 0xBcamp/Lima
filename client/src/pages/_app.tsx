@@ -11,6 +11,7 @@ import { AbiEvents } from '@/components/abi/AbiEvents';
 import SidePanel from '@/components/SidePanel';
 import '@fortawesome/fontawesome-svg-core/styles.css';
 import 'react-toastify/dist/ReactToastify.css';
+import "react-datepicker/dist/react-datepicker.css";
 import { ToastContainer, toast } from 'react-toastify';
 
 const jsonRpcProvider = new ethers.JsonRpcProvider(process.env.RPC_URL);

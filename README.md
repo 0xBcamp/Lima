@@ -128,3 +128,13 @@ The Messaging contract enables communication between guests and hosts by allowin
 1. **sendMessage:** This function allows a user to send a message related to a booking. It checks if the sender is either the guest or the host using the isSenderGuestOrHost helper function. The function then creates a new Message struct and stores it in the _bookingMessages mapping. It emits a MessageSent event.
 2. **getMessages:** This function retrieves all messages related to a booking, given the booking ID. It returns an array of Message structs.
 3. **isSenderGuestOrHost (internal):** This helper function checks if the sender is the guest or the host. It returns true if the sender is either the guest or the host, and false otherwise.
+
+# Verified Deployed Contracts (Sepolia testnet)
+- DummyUSDC - https://sepolia.etherscan.io/address/0xfD78d65713985C66b9F15654d17E30FFee22cC1c#code
+- Property - https://sepolia.etherscan.io/address/0x28A78C65cFec19eA6C8FcFfCDC27514C90D20B56#code 
+- User - https://sepolia.etherscan.io/address/0xbdA9D723eBA018e3A51C9AFB167E1b36E9c852e5#code
+- Rewards - https://sepolia.etherscan.io/address/0xD424C57C242eD5851a7BCfb60D1962d324e6a4f8#code  
+- Escrow - https://sepolia.etherscan.io/address/0x6C6bB3f931db93000fF339176C495C1466b9b45D#code
+- Booking - https://sepolia.etherscan.io/address/0x1245195f71e03E7Bb67258396fC4e67Ea9eF09E6#code
+- Messaging - https://sepolia.etherscan.io/address/0x4BC393A903947Abf20A62dA9ed5D4fbb34e371A8#code
+- Review - https://sepolia.etherscan.io/address/0x088a73e6dA8DDeD542e8292a0bC1cfe28B4bfA51#code

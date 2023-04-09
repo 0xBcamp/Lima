@@ -3,7 +3,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { ISolContract_ABI } from '../../../models/solContract';
 import { FC_Input } from '../form-controls/FC_Input';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUserCircle } from '@fortawesome/free-solid-svg-icons';
+import { faCalendar, faCalendarAlt, faUserCircle } from '@fortawesome/free-solid-svg-icons';
 import { AbiInputOutputTypesEnum } from '@/enums/AbiInputOutputTypesEnum';
 import { useAppDispatch, useAppSelector } from '../../../store/hooks';
 import { openSidePanel } from '../../../store/slices/sidePanelSlice';
@@ -11,6 +11,7 @@ import { PanelsEnum } from '@/enums/PanelsEnum';
 import EthersContext from '../../../context/EthersContext';
 import { ethers } from 'ethers';
 import { toast } from 'react-toastify';
+import DatePicker from "react-datepicker";
 
 interface IAbiFunctionItemProps {
     abiFunction: ISolContract_ABI,
@@ -35,14 +36,10 @@ export const AbiFunctionItem = ({ abiFunction, valueChanged }: IAbiFunctionItemP
                 <div className='text-sm mb-1 flex'>
                     <div className='grow'>{abiFunction.name}</div>
                     <div className='text-sm text-blue-700 hover:cursor-pointer' onClick={async () => {
-                        console.log("Submit clicked");
-                        console.log('abiFunction :>> ', abiFunction);
 
                         if (selectedContract && selectedAccount) {
                             const wallet = new ethers.Wallet(selectedAccount.privateKey, provider);
                             const contract = new ethers.Contract(selectedContract.address, selectedContract.abi, wallet);
-                            console.log('contract :>> ', contract);
-                            console.log('abiFunction :>> ', abiFunction);
                             const pendingToastId = toast.info('Transaction Pending...', {
                                 autoClose: false,
                             });
@@ -56,11 +53,9 @@ export const AbiFunctionItem = ({ abiFunction, valueChanged }: IAbiFunctionItemP
                                     });
                                 }
 
-                                console.log('inputs :>> ', inputs);
-
                                 if (abiFunction.stateMutability === "view") {
                                     const returnedData = inputs.length === 0 ? await (contract as any)[abiFunction.name!]() : await (contract as any)[abiFunction.name!](...inputs);
-
+                                    
                                     toast.dismiss(pendingToastId); // Close the pending toast.
                                     toast.success(<>
                                         <div>Transaction Successful</div>
@@ -71,13 +66,8 @@ export const AbiFunctionItem = ({ abiFunction, valueChanged }: IAbiFunctionItemP
                                     // Step 1: Call the contract function and receive the transaction response.
                                     const txResponse = await (contract as any)[abiFunction.name!](...inputs);
 
-                                    console.log('Transaction response:', txResponse);
-
                                     // Step 2: Wait for the transaction to be mined.
                                     const txReceipt = await txResponse.wait();
-
-                                    // Step 3: Get the transaction receipt.
-                                    console.log('Transaction receipt:', txReceipt);
 
                                     toast.dismiss(pendingToastId); // Close the pending toast.
                                     toast.success('Transaction successful!');
@@ -86,10 +76,20 @@ export const AbiFunctionItem = ({ abiFunction, valueChanged }: IAbiFunctionItemP
 
 
                                 // Process the transaction receipt as needed.
-                            } catch (error) {
-                                console.error('Error while minting NFT:', error);
+                            } catch (error: any) {
+                                let displayMessage = error;
+
+                                if (error?.data?.message) {
+                                    const message = error.data.message;
+                                    const reason = message.split('revert ')[1]?.split(' ')[0];
+                                    displayMessage = reason ? reason : message;
+                                } else if (error?.message) {
+                                    displayMessage = error.message;
+                                }
+
+                                console.error(error);
                                 toast.dismiss(pendingToastId); // Close the pending toast.
-                                toast.error((error as string).toString());
+                                toast.error((displayMessage as string).toString());
                             }
 
                             // const result = await contract.callStatic.();
@@ -126,6 +126,13 @@ export const AbiFunctionItem = ({ abiFunction, valueChanged }: IAbiFunctionItemP
                                             sourceId: `${abiFunction.name}-${index}`
                                         }));
                                     }} />
+                                </div>}
+                                {input.name?.toLowerCase().includes("date") && <div className='pl-2 my-auto text-blue-700'>
+                                    <DatePicker selected={new Date()} onChange={(date) => valueChanged(index, abiFunction.name!, date?.getTime())} customInput={
+                                        <button>
+                                            <FontAwesomeIcon icon={faCalendarAlt} />
+                                        </button>
+                                    } />
                                 </div>}
                             </div>
                         )

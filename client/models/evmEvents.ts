@@ -21,10 +21,60 @@ export interface IUserRegisteredEvent {
 export interface IPropertyRegisteredEvent {
   propertyId: string;
   owner: string;
+  name: string;
   location: string;
   country: string;
   uri: string;
   pricePerNight: string;
+}
+
+export interface IBookingCreatedEvent {
+  bookingId: string;
+  propertyId: string;
+  renter: string;
+  startDate: string;
+  endDate: string;
+}
+
+export enum UserPointType {
+  UserRegistered,
+  PropertyRegistered,
+  ReviewSubmitted,
+  BookingCreated,
+  BookingReceived
+}
+
+export interface IUserPointsAddedEvent {
+  user: string;
+  points: string;
+  month: string;
+  pointType: string;
+}
+
+export interface IRewardWithdrawnEvent {
+  user: string;
+  amount: string;
+  month: string;
+}
+
+export interface IMessageSentEvent {
+  bookingId: string;
+  sender: string;
+  content: string;
+  timestamp: string;
+}
+
+export interface IBookingReview {
+  rating: string;
+  comment: string;
+  timestamp: string;
+}
+
+export interface IReviewSubmittedEvent {
+  reviewer: string;
+  propertyId: string;
+  bookingId: string;
+  review: IBookingReview;
 }
 
 const evmEventSchema = new Schema<IEvmEvent>(

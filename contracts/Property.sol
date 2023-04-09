@@ -4,8 +4,12 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 
+import "./interfaces/IRewards.sol";
+
 contract Property is ERC1155 {
     using Counters for Counters.Counter;
+
+    IRewards public rewardsContract;
 
     //Setting a fixed amount of shares for each property - not price related
     uint256 public constant TOTAL_SHARES = 1000000;
@@ -13,6 +17,7 @@ contract Property is ERC1155 {
     struct PropertyInfo {
         uint256 propertyId;
         address owner;
+        string name;
         string location;
         string country;
         string uri;
@@ -25,6 +30,7 @@ contract Property is ERC1155 {
     event PropertyRegistered(
         uint256 indexed propertyId,
         address indexed owner,
+        string name,
         string location,
         string country,
         string uri,
@@ -47,9 +53,11 @@ contract Property is ERC1155 {
     // Value (bool): The availability status of the property on that date (true for unavailable, false for available).
     mapping(uint256 => mapping(uint256 => bool)) private _unavailableDates;
 
-    constructor() ERC1155("") {}
+    constructor(address _rewardsContractAddress) ERC1155("") {
+        rewardsContract = IRewards(_rewardsContractAddress);
+    }
 
-    function registerProperty(string memory location, string memory country, string memory uri, uint256 priceUSD, uint256 pricePerNightUSD, bool enableFractional) public returns (uint256) {
+    function registerProperty(string memory name, string memory location, string memory country, string memory uri, uint256 priceUSD, uint256 pricePerNightUSD, bool enableFractional) public returns (uint256) {
         _propertyIds.increment();
         uint256 newPropertyId = _propertyIds.current();
 
@@ -58,6 +66,7 @@ contract Property is ERC1155 {
         _properties[newPropertyId] = PropertyInfo({
             propertyId: newPropertyId,
             owner: msg.sender,
+            name: name,
             country: country,
             location: location,
             uri: uri,
@@ -71,9 +80,10 @@ contract Property is ERC1155 {
             _propertyShares[newPropertyId][msg.sender] = TOTAL_SHARES;
         }
 
-        //Rewards host user points
+        //Reward user points for creating a profile.
+        rewardsContract.addUserPoints(msg.sender, UserPointType.PropertyRegistered);
 
-        emit PropertyRegistered(newPropertyId, msg.sender, location, country, uri, pricePerNightUSD);
+        emit PropertyRegistered(newPropertyId, msg.sender, name, location, country, uri, pricePerNightUSD);
 
         return newPropertyId;
     }

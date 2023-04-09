@@ -1,14 +1,15 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { IProperty, Property } from '../../../models/property';
+import { Booking, IBooking } from '../../../models/booking';
+import { IReward, Reward } from '../../../models/reward';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     if (req.method === 'GET') {
         try {
-            const properties: IProperty[] = await Property.find().populate("user");
-            return res.status(200).json(properties);
+            const rewards: IReward[] = await Reward.find().populate("userObj");
+            return res.status(200).json(rewards);
         } catch (error) {
             console.error(error);
-            return res.status(500).json({ error: 'Error fetching properties' });
+            return res.status(500).json({ error: 'Error fetching rewards' });
         }
     }
     else {

@@ -3,8 +3,12 @@ pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
+import "./enums/UserPointType.sol";
 
 contract Rewards is Ownable {
+    // Create a mapping between the UserPointType and the corresponding point allocation
+    mapping(UserPointType => uint256) public pointAllocations;
+
     // This mapping stores the points earned by a user in a specific month.
     mapping(address => mapping(uint256 => uint256)) public userMonthPoints;
 
@@ -19,7 +23,7 @@ contract Rewards is Ownable {
 
     address public usdcTokenAddress;
 
-    event UserPointsAdded(address indexed user, uint256 points, uint256 month);
+    event UserPointsAdded(address indexed user, uint256 points, uint256 month, UserPointType pointType);
     event RewardWithdrawn(address indexed user, uint256 amount, uint256 month);
 
     // This modifier checks if the given month is completed.
@@ -38,10 +42,20 @@ contract Rewards is Ownable {
 
     constructor(address _usdcTokenAddress)  {
         usdcTokenAddress = _usdcTokenAddress;
+
+        //Initialize the point allocations for each UserPointType
+        pointAllocations[UserPointType.UserRegistered] = 50;
+        pointAllocations[UserPointType.PropertyRegistered] = 200;
+        pointAllocations[UserPointType.ReviewSubmitted] = 100;
+        pointAllocations[UserPointType.BookingCreated] = 100;
+        pointAllocations[UserPointType.BookingReceived] = 50;
     }
 
     // This function adds points to a user for the current month.
-    function addUserPoints(address user, uint256 points) external {
+    function addUserPoints(address user, UserPointType pointType) external {
+        // Get the points for the given pointType
+        uint256 points = pointAllocations[pointType];
+
         // Calculate the current month based on the block timestamp.
         uint256 currentMonth = block.timestamp / 30 days;
 
@@ -52,7 +66,7 @@ contract Rewards is Ownable {
         totalMonthPoints[currentMonth] += points;
 
         // Emit an event
-        emit UserPointsAdded(user, points, currentMonth);
+        emit UserPointsAdded(user, points, currentMonth, pointType);
     }
 
     // This function allows users to withdraw their rewards for a specified month based on a rolling 3-month rewards calculation.

@@ -4,7 +4,7 @@ import { IUser, User } from '../../../models/user';
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     if (req.method === 'GET') {
         try {
-            const users: IUser[] = await User.find().populate('properties');
+            const users: IUser[] = await User.find().populate('properties').populate('rewards');
             return res.status(200).json(users);
         } catch (error) {
             console.error(error);

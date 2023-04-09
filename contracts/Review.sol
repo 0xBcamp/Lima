@@ -5,6 +5,7 @@ import "./Booking.sol";
 import "./Property.sol";
 import "./Rewards.sol";
 import "./interfaces/IRewards.sol";
+import "./enums/UserPointType.sol";
 
 // This contract manages reviews submitted by users after completing their stays.
 contract Review {
@@ -50,8 +51,7 @@ contract Review {
         _bookingReviews[bookingId][msg.sender] = newReview;
 
         // Award user points for submitting a review.
-        uint256 points = 100;
-        rewardsContract.addUserPoints(msg.sender, points);
+        rewardsContract.addUserPoints(msg.sender, UserPointType.ReviewSubmitted);
 
         emit ReviewSubmitted(msg.sender, propertyId, bookingId, newReview);
     }

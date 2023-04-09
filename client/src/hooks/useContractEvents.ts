@@ -2,7 +2,7 @@ import { useContext, useEffect } from 'react';
 import EthersContext from '../../context/EthersContext';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { ethers } from 'ethers';
-import { IPropertyRegisteredEvent, IUserRegisteredEvent } from '../../models/evmEvents';
+import { IBookingCreatedEvent, IBookingReview, IMessageSentEvent, IPropertyRegisteredEvent, IReviewSubmittedEvent, IRewardWithdrawnEvent, IUserPointsAddedEvent, IUserRegisteredEvent, UserPointType } from '../../models/evmEvents';
 import { IEventInput, getEvents, saveEvent } from '../../services/evmEventService';
 import { addEvent, addEvents } from '../../store/slices/evmEventSlice';
 
@@ -49,10 +49,104 @@ const useContractEvents = () => {
           const propertyContract = contracts.find(x => x.name === "Property");
           if (propertyContract) {
             const evmPropertyContract = new ethers.Contract(propertyContract.address, propertyContract.abi, provider);
-            evmPropertyContract.on("PropertyRegistered", async (propertyId, owner, location, country, uri, pricePerNight, event) => {
-              console.log('event :>> ', event);
-              const eventData: IPropertyRegisteredEvent = { propertyId: propertyId.toString(), owner, location, country, uri, pricePerNight: pricePerNight.toString() }
+            evmPropertyContract.on("PropertyRegistered", async (propertyId, owner, name, location, country, uri, pricePerNight, event) => {
+              const eventData: IPropertyRegisteredEvent = { propertyId: propertyId.toString(), owner, name, location, country, uri, pricePerNight: pricePerNight.toString() }
               const eventResponse = await saveEvent({ eventName: "PropertyRegistered", contract: propertyContract.name, blockNumber: event.log.blockNumber, transactionHash: event.log.transactionHash, eventData: eventData });
+              if (eventResponse.event) {
+                dispatch(addEvent(eventResponse.event));
+              }
+            });
+          }
+
+          // Booking Contract events
+          const bookingContract = contracts.find(x => x.name === "Booking");
+          if (bookingContract) {
+            const evmBookingContract = new ethers.Contract(bookingContract.address, bookingContract.abi, provider);
+            evmBookingContract.on("BookingCreated", async (bookingId, propertyId, renter, startDate, endDate, event) => {
+              const eventData: IBookingCreatedEvent = { bookingId: bookingId.toString(), propertyId: propertyId.toString(), renter, startDate: startDate.toString(), endDate: endDate.toString() }
+              const eventResponse = await saveEvent({ eventName: "BookingCreated", contract: bookingContract.name, blockNumber: event.log.blockNumber, transactionHash: event.log.transactionHash, eventData: eventData });
+              if (eventResponse.event) {
+                dispatch(addEvent(eventResponse.event));
+              }
+            });
+          }
+
+          // Rewards Contract events
+          const rewardsContract = contracts.find(x => x.name === "Rewards");
+          if (rewardsContract) {
+            const evmRewardsContract = new ethers.Contract(rewardsContract.address, rewardsContract.abi, provider);
+
+            // UserPointsAdded event
+            evmRewardsContract.on("UserPointsAdded", async (user, points, month, pointType, event) => {
+              console.log('UserPointsAdded :>> ', user, points, month, pointType);
+              // const poitndesc = UserPointType[pointType];
+              // console.log('poitndesc :>> ', poitndesc);
+              const eventData: IUserPointsAddedEvent = {
+                user,
+                points: points.toString(),
+                month: month.toString(),
+                pointType: pointType.toString()
+              }
+              const eventResponse = await saveEvent({ eventName: "UserPointsAdded", contract: rewardsContract.name, blockNumber: event.log.blockNumber, transactionHash: event.log.transactionHash, eventData: eventData });
+              if (eventResponse.event) {
+                dispatch(addEvent(eventResponse.event));
+              }
+            });
+
+            // RewardWithdrawn event
+            evmRewardsContract.on("RewardWithdrawn", async (user, amount, month, event) => {
+              const eventData: IRewardWithdrawnEvent = {
+                user,
+                amount: amount.toString(),
+                month: month.toString(),
+              }
+              const eventResponse = await saveEvent({ eventName: "RewardWithdrawn", contract: rewardsContract.name, blockNumber: event.log.blockNumber, transactionHash: event.log.transactionHash, eventData: eventData });
+              if (eventResponse.event) {
+                dispatch(addEvent(eventResponse.event));
+              }
+            });
+          }
+
+          // Message Contract events
+          const messageContract = contracts.find(x => x.name === "Messaging");
+          if (messageContract) {
+            const evmMessageContract = new ethers.Contract(messageContract.address, messageContract.abi, provider);
+
+            // MessageSent event
+            evmMessageContract.on("MessageSent", async (bookingId, sender, content, timestamp, event) => {
+              const eventData: IMessageSentEvent = {
+                bookingId: bookingId.toString(),
+                sender,
+                content,
+                timestamp: timestamp.toString(),
+              }
+              const eventResponse = await saveEvent({ eventName: "MessageSent", contract: messageContract.name, blockNumber: event.log.blockNumber, transactionHash: event.log.transactionHash, eventData: eventData });
+              if (eventResponse.event) {
+                dispatch(addEvent(eventResponse.event));
+              }
+            });
+          }
+
+          // Review Contract events
+          const reviewContract = contracts.find(x => x.name === "Review");
+          if (reviewContract) {
+            const evmReviewContract = new ethers.Contract(reviewContract.address, reviewContract.abi, provider);
+
+            // ReviewSubmitted event
+            evmReviewContract.on("ReviewSubmitted", async (reviewer, propertyId, bookingId, review, event) => {
+              const reviewData: IBookingReview = {
+                rating: review.rating.toString(),
+                comment: review.comment,
+                timestamp: review.timestamp.toString(),
+              };
+
+              const eventData: IReviewSubmittedEvent = {
+                reviewer,
+                propertyId: propertyId.toString(),
+                bookingId: bookingId.toString(),
+                review: reviewData,
+              }
+              const eventResponse = await saveEvent({ eventName: "ReviewSubmitted", contract: reviewContract.name, blockNumber: event.log.blockNumber, transactionHash: event.log.transactionHash, eventData: eventData });
               if (eventResponse.event) {
                 dispatch(addEvent(eventResponse.event));
               }

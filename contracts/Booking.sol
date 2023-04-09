@@ -18,6 +18,8 @@ contract Booking is ERC721 {
         uint256 endDate;
     }
 
+    event BookingCreated(uint256 indexed bookingId, uint256 indexed propertyId, address indexed renter, uint256 startDate, uint256 endDate);
+
     uint256 private bookingCounter;
     mapping(uint256 => BookingInfo) private _bookings;
     Counters.Counter private _bookingIds;
@@ -29,9 +31,9 @@ contract Booking is ERC721 {
     IRewards rewardsContract;
     address public usdcTokenAddress;
 
-    modifier onlyRegisteredUser() {
+    modifier onlyRegisteredUser(address user) {
         //Checking the user contract to verify that the current user is registered
-        // require(userContract.isUserRegistered(msg.sender), "User is not registered");
+        //require(userContract.userExists(user), "User is not registered");
         _;
     }
 
@@ -47,9 +49,19 @@ contract Booking is ERC721 {
         rewardsContract = IRewards(_rewardsContractAddress);
     }
 
-    function createBooking(uint256 _propertyId, uint256 _startDate, uint256 _endDate) public payable onlyRegisteredUser {
+    function createBooking(uint256 _propertyId, uint256 _startDate, uint256 _endDate) external returns (uint256) {
         require(_startDate < _endDate, "Start date must be before end date");
-        require(propertyContract.isPropertyAvailable(_propertyId, _startDate, _endDate), "Property is not available for the given dates");
+        //require(propertyContract.isPropertyAvailable(_propertyId, _startDate, _endDate), "Property is not available for the given dates");
+
+        // Calculate required payment amount
+        uint256 totalPrice = propertyContract.getTotalPriceForDates(_propertyId, _startDate, _endDate);
+
+        // Calculate platform fees amount (5% of totalPrice)
+        uint256 platformFeesAmount = totalPrice * 5 / 100;
+
+        // Check if the user has enough USDC balance
+        IERC20 usdcToken = IERC20(usdcTokenAddress); 
+        require(usdcToken.balanceOf(msg.sender) >= totalPrice + platformFeesAmount, "Insufficient USDC balance");
 
         // Generate a unique booking ID
         _bookingIds.increment();
@@ -61,27 +73,20 @@ contract Booking is ERC721 {
         // Store the propertyId for this bookingId
         bookingIdToPropertyId[bookingId] = _propertyId;
 
-        // Update the property's availability in the PropertyContract
-        propertyContract.updateAvailability(_propertyId, _startDate, _endDate);
-
-        // Calculate required payment amount
-        uint256 totalPrice = propertyContract.getTotalPriceForDates(_propertyId, _startDate, _endDate);
-
-        // Calculate platform fees amount (5% of totalPrice)
-        uint256 platformFeesAmount = totalPrice * 5 / 100;
+        // // Update the property's availability in the PropertyContract
+        // propertyContract.updateAvailability(_propertyId, _startDate, _endDate);
 
         // Deposit the funds into the escrow contract
         escrowContract.deposit(bookingId, totalPrice);
 
         // Transfer USDC from the user to the escrow contract
-        IERC20 usdcToken = IERC20(usdcTokenAddress); 
         usdcToken.transferFrom(msg.sender, address(escrowContract), totalPrice);
         usdcToken.transferFrom(msg.sender, address(rewardsContract), platformFeesAmount); // Transfer the rewardsAmount to the rewards contract
 
         // Emit a booking event
         emit BookingCreated(bookingId, _propertyId, msg.sender, _startDate, _endDate);
 
-        //Sending the reuired USDC from the msg.sender to the Escrow account
+        return bookingId;
     }
 
     function getPropertyIdByBookingId(uint256 _bookingId) public view returns (uint256) {
@@ -115,5 +120,10 @@ contract Booking is ERC721 {
         return false;
     }
 
-    event BookingCreated(uint256 indexed bookingId, uint256 indexed propertyId, address indexed renter, uint256 startDate, uint256 endDate);
+    function getBookingInfo(uint256 _bookingId) public view returns (BookingInfo memory) {
+        //require(_bookingId <= _bookingIds.current(), "Booking does not exist");
+
+        // Retrieve the booking struct
+        return _bookings[_bookingId];
+    }
 }
