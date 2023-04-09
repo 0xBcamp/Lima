@@ -129,7 +129,7 @@ The Messaging contract enables communication between guests and hosts by allowin
 2. **getMessages:** This function retrieves all messages related to a booking, given the booking ID. It returns an array of Message structs.
 3. **isSenderGuestOrHost (internal):** This helper function checks if the sender is the guest or the host. It returns true if the sender is either the guest or the host, and false otherwise.
 
-# Verified Deployed Contracts (Sepolia testnet)
+## Verified Deployed Contracts (Sepolia testnet)
 - DummyUSDC - https://sepolia.etherscan.io/address/0xfD78d65713985C66b9F15654d17E30FFee22cC1c#code
 - Property - https://sepolia.etherscan.io/address/0x28A78C65cFec19eA6C8FcFfCDC27514C90D20B56#code 
 - User - https://sepolia.etherscan.io/address/0xbdA9D723eBA018e3A51C9AFB167E1b36E9c852e5#code
