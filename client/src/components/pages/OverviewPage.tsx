@@ -16,12 +16,35 @@ export const OverviewPage = () => {
     const { provider } = useContext(EthersContext);
 
     const usdcContract = useAppSelector((state) => state.solContract.contracts?.find(x => x.name === "DummyUSDC"));
+    const rewardsContract = useAppSelector((state) => state.solContract.contracts?.find(x => x.name === "Rewards"));
+    const escrowContract = useAppSelector((state) => state.solContract.contracts?.find(x => x.name === "Escrow"));
     const lastEventAdded = useAppSelector((state) => state.evmEvent.lastEventAdded);
 
     const [users, setUsers] = useState<IUserDto[]>([]);
     const [properties, setProperties] = useState<IProperty[]>([]);
     const [bookings, setBookings] = useState<IBooking[]>([]);
     const [rewards, setRewards] = useState<IReward[]>([]);
+
+    const [rewardsUSDCBalance, setRewardsUSDCBalance] = useState<string>("0.0");
+    const [escrowUSDCBalance, setEscrowUSDCBalance] = useState<string>("0");
+
+    useEffect(() => {
+        (async () => {
+            if (rewardsContract) {
+                const balance = await getUSDCBalance(rewardsContract.address);
+                setRewardsUSDCBalance(balance ? balance: "0.0");
+            }
+        })();
+    }, [rewardsContract])
+
+    useEffect(() => {
+        (async () => {
+            if (escrowContract) {
+                const balance = await getUSDCBalance(escrowContract.address);
+                setEscrowUSDCBalance(balance ? balance: "0.0");
+            }
+        })();
+    }, [escrowContract])
 
     useEffect(() => {
         if (usdcContract) {
@@ -33,7 +56,7 @@ export const OverviewPage = () => {
                         usdcBalance: await getUSDCBalance(user.owner)
                     };
                 })));
-    
+
                 setProperties(await getProperties());
                 setBookings(await getBookings());
                 setRewards(await getRewards());
@@ -171,6 +194,23 @@ export const OverviewPage = () => {
 
                     }
                     {rewards.length === 0 && <div className='text-gray-500 text-center py-6'>No rewards available</div>}
+                </div>
+
+                <div className='shadow-lg mb-4'>
+                    <div className='bg-gray-50 text-lg p-1 shadow'>Pools</div>
+
+                    <div className='p-1 hover:bg-gray-50 grid grid-cols-5 text-sm font-semibold'>
+                        <div className='col-span-1'>Name</div>
+                        <div className='col-span-1'>USDC Balance</div>
+                    </div>
+                    <div className='p-1 hover:bg-gray-50 grid grid-cols-5 text-sm'>
+                        <div className='col-span-1'>Rewards Contract</div>
+                        <div className='col-span-1'>{rewardsUSDCBalance}</div>
+                    </div>
+                    <div className='p-1 hover:bg-gray-50 grid grid-cols-5 text-sm'>
+                        <div className='col-span-1'>Escrow Contract</div>
+                        <div className='col-span-1'>{escrowUSDCBalance}</div>
+                    </div>
                 </div>
                 {/* {!selectedUser && <div className='mt-20 text-lg text-center'>No user selected</div>}
                 {selectedUser && <div className='shadow-lg mb-4'>

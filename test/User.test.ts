@@ -12,6 +12,9 @@ describe("User", function () {
 
     let owner: SignerWithAddress;
 
+    const firstName = "John";
+    const lastName = "Doe";
+
     beforeEach(async () => {
         const contracts = await getDeployedContracts();
 
@@ -23,8 +26,6 @@ describe("User", function () {
     });
 
     it("Should register a new user", async function () {
-        const firstName = "John";
-        const lastName = "Doe";
         const userRegistration = await user.registerUser(firstName, lastName);
         const tokenId = await userRegistration.wait();
 
@@ -33,8 +34,6 @@ describe("User", function () {
     });
 
     it("Should not allow a user to register twice", async function () {
-        const firstName = "John";
-        const lastName = "Doe";
         await user.registerUser(firstName, lastName);
     
         expect(await user.userExists(owner.address)).to.equal(true);
@@ -44,5 +43,17 @@ describe("User", function () {
 
     it("Should return false for non-existent users", async function () {
         expect(await user.userExists(owner.address)).to.equal(false);
+    });
+
+    it("Should award 50 points to a user for registering", async function () {
+        // Register a user
+        await user.registerUser(firstName, lastName);
+
+        // Get the current month based on the block timestamp.
+        const currentMonth = Math.floor(Date.now() / 1000 / 86400 / 30);
+
+        // Check if the user's points for the current month are equal to 20
+        const userPoints = await rewards.userMonthPoints(owner.address, currentMonth);
+        expect(userPoints.toString()).to.equal("50");
     });
 });

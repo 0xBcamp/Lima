@@ -5,11 +5,14 @@ import "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 
 import "./interfaces/IRewards.sol";
+import "./interfaces/IERC20WithDecimals.sol";
 
 contract Property is ERC1155 {
     using Counters for Counters.Counter;
 
     IRewards public rewardsContract;
+
+    address public usdcTokenAddress;
 
     //Setting a fixed amount of shares for each property - not price related
     uint256 public constant TOTAL_SHARES = 1000000;
@@ -53,8 +56,9 @@ contract Property is ERC1155 {
     // Value (bool): The availability status of the property on that date (true for unavailable, false for available).
     mapping(uint256 => mapping(uint256 => bool)) private _unavailableDates;
 
-    constructor(address _rewardsContractAddress) ERC1155("") {
+    constructor(address _rewardsContractAddress, address _usdcTokenAddress) ERC1155("") {
         rewardsContract = IRewards(_rewardsContractAddress);
+        usdcTokenAddress = _usdcTokenAddress;
     }
 
     function registerProperty(string memory name, string memory location, string memory country, string memory uri, uint256 priceUSD, uint256 pricePerNightUSD, bool enableFractional) public returns (uint256) {
@@ -156,15 +160,20 @@ contract Property is ERC1155 {
         }
     }
 
+    //Calculating the amount of USDC for a price range
     function getTotalPriceForDates(uint256 _propertyId, uint256 _startDate, uint256 _endDate) public view returns (uint256) {
         require(_startDate < _endDate, "Start date must be before end date");
+        require(isValidProperty(_propertyId), "Invalid property");
 
         //Getting the selected property info
         PropertyInfo storage property = _properties[_propertyId];       
 
         //Converting timestamp to the number of days
-        uint256 bookingDuration = (_endDate - _startDate) / 1 days;  
-        uint256 totalPrice = property.pricePerNight * bookingDuration;
+        uint256 bookingDuration = (_endDate - _startDate) / 1 days;
+
+        //Calculating the price and adding USDC decimals
+        IERC20WithDecimals usdcToken = IERC20WithDecimals(usdcTokenAddress); 
+        uint256 totalPrice = property.pricePerNight * bookingDuration * (10 ** usdcToken.decimals());
         return totalPrice;
     }
 

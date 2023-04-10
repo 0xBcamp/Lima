@@ -21,7 +21,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   await user.deployed();
 
   const Property = await hre.ethers.getContractFactory("Property");
-  const property = await Property.deploy(rewards.address);
+  const property = await Property.deploy(rewards.address, dummyUSDC.address);
   await property.deployed();
 
   const Escrow = await hre.ethers.getContractFactory("Escrow");
@@ -56,8 +56,6 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
     review: review.address,
   };
 
-  console.log('contractAddresses :>> ', contractAddresses);
-
   let fileName = "contractAddresses.json";
 
   if (hre.network.name === "hardhat") {
@@ -77,7 +75,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
     await hre.run("verify:verify", { address: dummyUSDC.address, constructorArguments: []});
     console.log("dummyUSDC verified");
 
-    await hre.run("verify:verify", { address: property.address, constructorArguments: [rewards.address]});
+    await hre.run("verify:verify", { address: property.address, constructorArguments: [rewards.address, dummyUSDC.address]});
     console.log("property verified");
 
     await hre.run("verify:verify", { address: user.address, constructorArguments: [rewards.address]});

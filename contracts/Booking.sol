@@ -8,6 +8,8 @@ import "./Property.sol";
 import "./Escrow.sol";
 import "./interfaces/IRewards.sol";
 
+import "hardhat/console.sol";
+
 contract Booking is ERC721 {
     using Counters for Counters.Counter;
 
@@ -79,9 +81,17 @@ contract Booking is ERC721 {
         // Deposit the funds into the escrow contract
         escrowContract.deposit(bookingId, totalPrice);
 
+        //Reward guest for making a booking.
+        rewardsContract.addUserPoints(msg.sender, UserPointType.BookingCreated);
+
+        //Rewardhost for receiving a booking.
+        rewardsContract.addUserPoints(propertyContract.getPropertyOwner(_propertyId), UserPointType.BookingReceived);
+
         // Transfer USDC from the user to the escrow contract
         usdcToken.transferFrom(msg.sender, address(escrowContract), totalPrice);
         usdcToken.transferFrom(msg.sender, address(rewardsContract), platformFeesAmount); // Transfer the rewardsAmount to the rewards contract
+
+
 
         // Emit a booking event
         emit BookingCreated(bookingId, _propertyId, msg.sender, _startDate, _endDate);

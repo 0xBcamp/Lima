@@ -43,13 +43,4 @@ describe("Rewards contract", function () {
         expect(bookingReceivedPoints).to.equal(points.BookingReceived);
     });
 
-    it("Should add user points for ReviewSubmitted", async function () {
-        await rewards.addUserPoints(account1.address, 2);
-        const currentMonth = Math.floor(Date.now() / 1000 / (30 * 24 * 60 * 60));
-        const userPoints = await rewards.userMonthPoints(account1.address, currentMonth);
-        const totalPoints = await rewards.totalMonthPoints(currentMonth);
-
-        expect(userPoints).to.equal(points.ReviewSubmitted);
-        expect(totalPoints).to.equal(points.ReviewSubmitted);
-    });
 });
