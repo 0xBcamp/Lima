@@ -20,7 +20,7 @@ contract Booking is ERC721 {
         uint256 endDate;
     }
 
-    event BookingCreated(uint256 indexed bookingId, uint256 indexed propertyId, address indexed renter, uint256 startDate, uint256 endDate);
+    event BookingCreated(uint256 indexed bookingId, uint256 indexed propertyId, address indexed renter, uint256 startDate, uint256 endDate, uint256 totalCost, uint256 platformFees);
 
     uint256 private bookingCounter;
     mapping(uint256 => BookingInfo) private _bookings;
@@ -94,7 +94,7 @@ contract Booking is ERC721 {
 
 
         // Emit a booking event
-        emit BookingCreated(bookingId, _propertyId, msg.sender, _startDate, _endDate);
+        emit BookingCreated(bookingId, _propertyId, msg.sender, _startDate, _endDate, totalPrice, platformFeesAmount);
 
         return bookingId;
     }

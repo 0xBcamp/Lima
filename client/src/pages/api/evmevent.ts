@@ -27,6 +27,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
             if (eventName === "UserRegistered") {
                 const data: IUserRegisteredEvent = eventData
+
+                const user = await User.findOne({ owner: data.owner });
+                if (user) {
+                    console.log("User already registered!");
+                    return;
+                }
+
                 const newUser: IUser = new User({
                     firstName: data.firstName,
                     lastname: data.lastName,
@@ -67,7 +74,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 const data: IBookingCreatedEvent = eventData;
 
                 // Find the user by renter's address
-                const user = await findUserWithRetry(data.renter);
+                //
+                const user = await User.findOne({ owner: data.renter });
                 if (!user) {
                     console.log("User not found!");
                     return;
@@ -86,6 +94,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     renter: data.renter,
                     startDate: data.startDate,
                     endDate: data.endDate,
+                    totalPrice: data.totalPrice,
+                    platformFeesAmount: data.platformFeesAmount,
                     user: user._id,
                     property: property._id,
                 });
@@ -104,7 +114,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 const data: IUserPointsAddedEvent = eventData;
 
                 // Find the user by renter's address
-                const user = await User.findOne({ owner: data.user });
+                //const user = await User.findOne({ owner: data.user });
+                const user = await findUserWithRetry(data.user);
                 if (!user) {
                     console.log("User not found!");
                     return;

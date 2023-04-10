@@ -59,7 +59,7 @@ describe("Booking tests", function () {
     const tx = await booking.connect(account1).createBooking(propertyId, startDate, endDate, { gasLimit: ethers.utils.parseUnits("30000000", "wei") });
 
     //Checking that the event is created
-    await expect(tx).to.emit(booking, "BookingCreated").withArgs(1, propertyId, account1.address, startDate, endDate);
+    await expect(tx).to.emit(booking, "BookingCreated").withArgs(1, propertyId, account1.address, startDate, endDate, totalPrice, platformFeesAmount);
 
     const receipt = await tx.wait();
     const bookingId = receipt.events?.filter((x: any) => { return x.event === "BookingCreated" })[0].args.bookingId;

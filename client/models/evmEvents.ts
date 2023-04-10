@@ -34,6 +34,8 @@ export interface IBookingCreatedEvent {
   renter: string;
   startDate: string;
   endDate: string;
+  totalPrice: string;
+  platformFeesAmount: string;
 }
 
 export enum UserPointType {

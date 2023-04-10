@@ -3,10 +3,10 @@ import mongoose from "mongoose";
 
 export interface IUserDto {
   _id?: string;
-  firstName: string;
-  lastname: string;
+  firstName?: string;
+  lastname?: string;
   owner: string;
-  tokenId: number;
+  tokenId?: number;
   properties: Types.Array<Types.ObjectId>;
   usdcBalance?: String;
   bookings: Types.Array<Types.ObjectId>;
@@ -15,10 +15,10 @@ export interface IUserDto {
 
 export interface IUser extends Document {
   _id?: string;
-  firstName: string;
-  lastname: string;
+  firstName?: string;
+  lastname?: string;
   owner: string;
-  tokenId: number;
+  tokenId?: number;
   properties: Types.Array<Types.ObjectId>;
   bookings: Types.Array<Types.ObjectId>;
   rewards: Types.Array<Types.ObjectId>;

@@ -6,8 +6,10 @@ export interface IBooking extends Document {
   bookingId: number;
   propertyId: number;
   renter: string;
-  startDate: Date;
-  endDate: Date;
+  startDate: string;
+  endDate: string;
+  totalPrice: string;
+  platformFeesAmount: string;
   user: Schema.Types.ObjectId;
   property: Schema.Types.ObjectId;
 }
@@ -17,8 +19,10 @@ const bookingSchema = new Schema<IBooking>(
     bookingId: Number,
     propertyId: Number,
     renter: String,
-    startDate: Date,
-    endDate: Date,
+    startDate: String,
+    endDate: String,
+    totalPrice: String,
+    platformFeesAmount: String,
     user: { type: Types.ObjectId, ref: "User" },
     property: { type: Types.ObjectId, ref: "Property" },
   }

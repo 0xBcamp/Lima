@@ -7,6 +7,8 @@ import "@openzeppelin/contracts/utils/Counters.sol";
 import "./interfaces/IRewards.sol";
 import "./interfaces/IERC20WithDecimals.sol";
 
+import "hardhat/console.sol";
+
 contract Property is ERC1155 {
     using Counters for Counters.Counter;
 
@@ -169,7 +171,7 @@ contract Property is ERC1155 {
         PropertyInfo storage property = _properties[_propertyId];       
 
         //Converting timestamp to the number of days
-        uint256 bookingDuration = (_endDate - _startDate) / 1 days;
+        uint256 bookingDuration = ((_endDate / 86400) - (_startDate / 86400));
 
         //Calculating the price and adding USDC decimals
         IERC20WithDecimals usdcToken = IERC20WithDecimals(usdcTokenAddress); 

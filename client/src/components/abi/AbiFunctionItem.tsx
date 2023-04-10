@@ -128,7 +128,7 @@ export const AbiFunctionItem = ({ abiFunction, valueChanged }: IAbiFunctionItemP
                                     }} />
                                 </div>}
                                 {input.name?.toLowerCase().includes("date") && <div className='pl-2 my-auto text-blue-700'>
-                                    <DatePicker selected={new Date()} onChange={(date) => valueChanged(index, abiFunction.name!, date?.getTime())} customInput={
+                                    <DatePicker selected={new Date()} onChange={(date) => valueChanged(index, abiFunction.name!, date ? (date.getTime() / 1000) : "")} customInput={
                                         <button>
                                             <FontAwesomeIcon icon={faCalendarAlt} />
                                         </button>

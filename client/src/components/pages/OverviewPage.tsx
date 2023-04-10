@@ -32,19 +32,19 @@ export const OverviewPage = () => {
         (async () => {
             if (rewardsContract) {
                 const balance = await getUSDCBalance(rewardsContract.address);
-                setRewardsUSDCBalance(balance ? balance: "0.0");
+                setRewardsUSDCBalance(balance ? balance : "0.0");
             }
         })();
-    }, [rewardsContract])
+    }, [rewardsContract, lastEventAdded])
 
     useEffect(() => {
         (async () => {
             if (escrowContract) {
                 const balance = await getUSDCBalance(escrowContract.address);
-                setEscrowUSDCBalance(balance ? balance: "0.0");
+                setEscrowUSDCBalance(balance ? balance : "0.0");
             }
         })();
-    }, [escrowContract])
+    }, [escrowContract, lastEventAdded])
 
     useEffect(() => {
         if (usdcContract) {
@@ -53,6 +53,7 @@ export const OverviewPage = () => {
                 setUsers(await Promise.all(tempUsers.map(async user => {
                     return {
                         ...user,
+                        tokenId: user.tokenId,
                         usdcBalance: await getUSDCBalance(user.owner)
                     };
                 })));
@@ -81,6 +82,24 @@ export const OverviewPage = () => {
             return ethers.formatEther(balance);
         }
 
+    }
+
+    const formatDate = (timestamp: string) => {
+        return new Date(+timestamp * 1000).toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+        })
+    }
+
+    const getMonthName = (monthTimeStamp: number) => {
+        const timestamp = monthTimeStamp * 1000 * 2595000; // Assuming the timestamp is in seconds
+        const date = new Date(timestamp);
+
+        const monthName = date.toLocaleDateString('en-US', { month: 'short' });
+        const year = date.toLocaleDateString('en-US', { year: 'numeric' });
+
+        return `${monthName} ${year}`;
     }
 
     return (
@@ -148,19 +167,24 @@ export const OverviewPage = () => {
                     <div className='bg-gray-50 text-lg p-1 shadow'>Bookings</div>
                     {bookings.length > 0 &&
                         <>
-                            <div className='p-1 hover:bg-gray-50 grid grid-cols-5 text-sm font-semibold'>
+                            <div className='p-1 hover:bg-gray-50 grid grid-cols-6 text-sm font-semibold'>
                                 <div className='col-span-1'>Property Name</div>
                                 <div className='col-span-1'>Renter</div>
                                 <div className='col-span-1'>From</div>
                                 <div className='col-span-1'>To</div>
+                                <div className='col-span-1'>Platform fees</div>
+                                <div className='col-span-1'>Total Paid</div>
                             </div>
                             {bookings.map((booking, index) => {
                                 return (
-                                    <div key={index} className='p-1 hover:bg-gray-50 grid grid-cols-5 text-sm'>
+                                    <div key={index} className='p-1 hover:bg-gray-50 grid grid-cols-6 text-sm'>
                                         <div className='col-span-1'>{(booking.property as any).name}</div>
-                                        <div className='col-span-1'>{(booking.user as any).firstName} {(booking.user as any).lastName}</div>
-                                        <div className='col-span-1'>{booking.startDate.toString()}</div>
-                                        <div className='col-span-1'>{booking.endDate.toString()}</div>
+                                        <div className='col-span-1'>{(booking.user as any).firstName} {(booking.user as any).lastname}</div>
+                                        <div className='col-span-1'>{formatDate(booking.startDate)}</div>
+                                        <div className='col-span-1'>{formatDate(booking.endDate)}</div>
+                                        <div className='col-span-1'>${ethers.formatEther(booking.platformFeesAmount)}</div>
+                                        <div className='col-span-1'>${ethers.formatEther(booking.totalPrice)}</div>
+
                                     </div>
                                 )
                             })}
@@ -184,7 +208,7 @@ export const OverviewPage = () => {
                                 return (
                                     <div key={index} className='p-1 hover:bg-gray-50 grid grid-cols-5 text-sm'>
                                         <div className='col-span-1'>{(reward.userObj as any).firstName} {(reward.userObj as any).lastname}</div>
-                                        <div className='col-span-1'>{reward.month}</div>
+                                        <div className='col-span-1'>{getMonthName(reward.month)}</div>
                                         <div className='col-span-1'>{reward.description}</div>
                                         <div className='col-span-1'>{reward.points}</div>
                                     </div>
@@ -205,11 +229,11 @@ export const OverviewPage = () => {
                     </div>
                     <div className='p-1 hover:bg-gray-50 grid grid-cols-5 text-sm'>
                         <div className='col-span-1'>Rewards Contract</div>
-                        <div className='col-span-1'>{rewardsUSDCBalance}</div>
+                        <div className='col-span-1'>${rewardsUSDCBalance}</div>
                     </div>
                     <div className='p-1 hover:bg-gray-50 grid grid-cols-5 text-sm'>
                         <div className='col-span-1'>Escrow Contract</div>
-                        <div className='col-span-1'>{escrowUSDCBalance}</div>
+                        <div className='col-span-1'>${escrowUSDCBalance}</div>
                     </div>
                 </div>
                 {/* {!selectedUser && <div className='mt-20 text-lg text-center'>No user selected</div>}

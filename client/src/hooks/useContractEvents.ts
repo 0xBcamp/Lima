@@ -62,8 +62,8 @@ const useContractEvents = () => {
           const bookingContract = contracts.find(x => x.name === "Booking");
           if (bookingContract) {
             const evmBookingContract = new ethers.Contract(bookingContract.address, bookingContract.abi, provider);
-            evmBookingContract.on("BookingCreated", async (bookingId, propertyId, renter, startDate, endDate, event) => {
-              const eventData: IBookingCreatedEvent = { bookingId: bookingId.toString(), propertyId: propertyId.toString(), renter, startDate: startDate.toString(), endDate: endDate.toString() }
+            evmBookingContract.on("BookingCreated", async (bookingId, propertyId, renter, startDate, endDate, totalPrice, platformFeesAmount, event) => {
+              const eventData: IBookingCreatedEvent = { bookingId: bookingId.toString(), propertyId: propertyId.toString(), renter, startDate: startDate.toString(), endDate: endDate.toString(), totalPrice: totalPrice.toString(), platformFeesAmount: platformFeesAmount.toString() }
               const eventResponse = await saveEvent({ eventName: "BookingCreated", contract: bookingContract.name, blockNumber: event.log.blockNumber, transactionHash: event.log.transactionHash, eventData: eventData });
               if (eventResponse.event) {
                 dispatch(addEvent(eventResponse.event));
