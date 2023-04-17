@@ -23,7 +23,6 @@ export const AbiFunctions = () => {
 
     useEffect(() => {
         if (panelSelectedAccount?.selectedAccount) {
-            console.log('panelSelectedAccount :>> ', panelSelectedAccount);
             const [sourceFunctionName, sourceIndex] = panelSelectedAccount.sourceId.split("-");
             setContractFunctions(contractFunctions.map(contractFunction => {
                 if (sourceFunctionName === contractFunction.name) {
@@ -55,7 +54,6 @@ export const AbiFunctions = () => {
     }, [panelSelectedAccount?.selectedAccount]);
 
     useEffect(() => {
-        console.log('selectedContract :>> ', selectedContract);
         setContractFunctions(selectedContract ? selectedContract.abi.filter(x => x.type === AbiTypesEnum.Function) : []);
     }, [selectedContract]);
 
@@ -72,16 +70,6 @@ export const AbiFunctions = () => {
                             return (
                                 <div key={index}>
                                     <AbiFunctionItem abiFunction={contractFunction} valueChanged={(inputIndex: number, functionName: string, value: any) => {
-                                        console.log('inputIndex, functionName, value :>> ', inputIndex, functionName, value );
-                                        // const newFunctions = contractFunctions.map(func => {
-                                        //     if (func.name === functionName) {
-                                        //         console.log('func :>> ', func);
-                                        //     } else {
-                                        //         return {
-                                        //             ...func
-                                        //         }
-                                        //     }
-                                        // })
                                         setContractFunctions(contractFunctions.map(func => {
                                             if (functionName === func.name) {
                                                 return {

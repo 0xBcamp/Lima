@@ -39,7 +39,8 @@ export const SubNavBar = () => {
                 {!isLoadingContracts && contracts && contracts.length > 0 &&
                     <div className="text-right flex ">
                         <div className={`p-2 flex  ${navigationPage === PagesEnum.Overview ? "bg-blue-500 text-white" : "hover:cursor-pointer hover:bg-blue-200"}`} onClick={() => dispatch(setPage(PagesEnum.Overview))}>Overview</div>
-                        <div className={`p-2 flex  ${navigationPage === PagesEnum.Graphs ? "bg-blue-500 text-white" : "hover:cursor-pointer hover:bg-blue-200"}`} onClick={() => dispatch(setPage(PagesEnum.Graphs))}>Graphs</div>
+                        <div className={`p-2 flex  ${navigationPage === PagesEnum.Client ? "bg-blue-500 text-white" : "hover:cursor-pointer hover:bg-blue-200"}`} onClick={() => dispatch(setPage(PagesEnum.Client))}>Client</div>
+                        {/* <div className={`p-2 flex  ${navigationPage === PagesEnum.Graphs ? "bg-blue-500 text-white" : "hover:cursor-pointer hover:bg-blue-200"}`} onClick={() => dispatch(setPage(PagesEnum.Graphs))}>Graphs</div> */}
                         <div className='grow'></div>
                         <div className='p-2 flex hover:cursor-pointer hover:bg-blue-50' onClick={() => {
                             dispatch(openSidePanel({

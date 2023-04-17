@@ -25,11 +25,12 @@ contract Property is ERC1155 {
         string name;
         string location;
         string country;
-        string uri;
+        string imageId;
         bool fractionalOwnershipEnabled;
         uint256 totalShares;
         uint256 pricePerNight;
         uint256 priceUSD;
+        string description;
     }
 
     event PropertyRegistered(
@@ -38,8 +39,9 @@ contract Property is ERC1155 {
         string name,
         string location,
         string country,
-        string uri,
-        uint256 pricePerNight
+        string imageId,
+        uint256 pricePerNight,
+        string description
     );
 
     event SharesTransferred(
@@ -63,7 +65,7 @@ contract Property is ERC1155 {
         usdcTokenAddress = _usdcTokenAddress;
     }
 
-    function registerProperty(string memory name, string memory location, string memory country, string memory uri, uint256 priceUSD, uint256 pricePerNightUSD, bool enableFractional) public returns (uint256) {
+    function registerProperty(string memory name, string memory location, string memory country, string memory imageId, uint256 priceUSD, uint256 pricePerNightUSD, bool enableFractional, string memory description) public returns (uint256) {
         _propertyIds.increment();
         uint256 newPropertyId = _propertyIds.current();
 
@@ -75,11 +77,12 @@ contract Property is ERC1155 {
             name: name,
             country: country,
             location: location,
-            uri: uri,
+            imageId: imageId,
             fractionalOwnershipEnabled: enableFractional,
             totalShares: TOTAL_SHARES,
             priceUSD: priceUSD,
-            pricePerNight: pricePerNightUSD
+            pricePerNight: pricePerNightUSD,
+            description: description
         });
 
         if (enableFractional) {
@@ -89,7 +92,7 @@ contract Property is ERC1155 {
         //Reward user points for creating a profile.
         rewardsContract.addUserPoints(msg.sender, UserPointType.PropertyRegistered);
 
-        emit PropertyRegistered(newPropertyId, msg.sender, name, location, country, uri, pricePerNightUSD);
+        emit PropertyRegistered(newPropertyId, msg.sender, name, location, country, imageId, pricePerNightUSD, description);
 
         return newPropertyId;
     }
@@ -195,11 +198,12 @@ contract Property is ERC1155 {
     }
 
     function isValidProperty(uint256 propertyId) public view returns (bool) {
-        if (propertyId <= _propertyIds.current()) {
-            return true;
-        }
+        return true;
+        // if (propertyId <= _propertyIds.current()) {
+        //     return true;
+        // }
 
-        return false;
+        // return false;
     }
 
     function getShares(uint256 propertyId, address owner) public view returns (uint256) {

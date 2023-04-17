@@ -18,6 +18,6 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "types", "services", "store", "models"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "types", "services", "store", "models", "../scripts/populate.ts"],
   "exclude": ["node_modules"]
 }

@@ -7,6 +7,7 @@ import { NoContractSelected } from '@/components/NoContractSelected';
 import { PagesEnum } from '@/enums/PagesEnum';
 import { OverviewPage } from '@/components/pages/OverviewPage';
 import { GraphsPage } from '@/components/pages/GraphsPage';
+import { ClientPage } from '@/components/pages/ClientPage';
 
 
 const inter = Inter({ subsets: ['latin'] })
@@ -26,6 +27,7 @@ export default function Home() {
         <div className=''>
           {navigationPage === PagesEnum.Overview && <OverviewPage />}
           {navigationPage === PagesEnum.Graphs && <GraphsPage />}
+          {navigationPage === PagesEnum.Client && <ClientPage />}
         </div>
       </main>
     </>

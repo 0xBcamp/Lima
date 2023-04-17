@@ -16,10 +16,6 @@ const useContractEvents = () => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    console.log('contracts :>> ', contracts);
-
-
-
     if (contracts && contracts?.length > 0 && provider) {
       const fetchEvents = async () => {
         try {
@@ -36,8 +32,8 @@ const useContractEvents = () => {
           const userContract = contracts.find(x => x.name === "User");
           if (userContract) {
             const evmUserContract = new ethers.Contract(userContract.address, userContract.abi, provider);
-            evmUserContract.on("UserRegistered", async (owner, tokenId, firstName, lastName, event) => {
-              const eventData: IUserRegisteredEvent = { owner, tokenId: tokenId.toString(), firstName, lastName }
+            evmUserContract.on("UserRegistered", async (owner, tokenId, tokenUri, event) => {
+              const eventData: IUserRegisteredEvent = { owner, tokenId: tokenId.toString(), tokenUri }
               const eventResponse = await saveEvent({ eventName: "UserRegistered", contract: userContract.name, blockNumber: event.log.blockNumber, transactionHash: event.log.transactionHash, eventData: eventData });
               if (eventResponse.event) {
                 dispatch(addEvent(eventResponse.event));
@@ -49,8 +45,8 @@ const useContractEvents = () => {
           const propertyContract = contracts.find(x => x.name === "Property");
           if (propertyContract) {
             const evmPropertyContract = new ethers.Contract(propertyContract.address, propertyContract.abi, provider);
-            evmPropertyContract.on("PropertyRegistered", async (propertyId, owner, name, location, country, uri, pricePerNight, event) => {
-              const eventData: IPropertyRegisteredEvent = { propertyId: propertyId.toString(), owner, name, location, country, uri, pricePerNight: pricePerNight.toString() }
+            evmPropertyContract.on("PropertyRegistered", async (propertyId, owner, name, location, country, imageId, pricePerNight, description, event) => {
+              const eventData: IPropertyRegisteredEvent = { propertyId: propertyId.toString(), owner, name, location, country, imageId, pricePerNight: pricePerNight.toString(), description }
               const eventResponse = await saveEvent({ eventName: "PropertyRegistered", contract: propertyContract.name, blockNumber: event.log.blockNumber, transactionHash: event.log.transactionHash, eventData: eventData });
               if (eventResponse.event) {
                 dispatch(addEvent(eventResponse.event));
@@ -78,9 +74,6 @@ const useContractEvents = () => {
 
             // UserPointsAdded event
             evmRewardsContract.on("UserPointsAdded", async (user, points, month, pointType, event) => {
-              console.log('UserPointsAdded :>> ', user, points, month, pointType);
-              // const poitndesc = UserPointType[pointType];
-              // console.log('poitndesc :>> ', poitndesc);
               const eventData: IUserPointsAddedEvent = {
                 user,
                 points: points.toString(),

@@ -7,6 +7,9 @@ import "@openzeppelin/contracts/utils/Strings.sol";
 
 import "./interfaces/IRewards.sol";
 
+import "hardhat/console.sol";
+
+
 contract User is ERC721 {
     using Counters for Counters.Counter;
     using Strings for uint256;
@@ -16,8 +19,7 @@ contract User is ERC721 {
     event UserRegistered(
         address indexed owner,
         uint256 indexed tokenId,
-        string firstName,
-        string lastName
+        string tokenUri
     );
 
     Counters.Counter private _tokenIds;
@@ -27,7 +29,7 @@ contract User is ERC721 {
         rewardsContract = IRewards(_rewardsContractAddress);
     }
 
-    function registerUser(string memory firstName, string memory lastName) public returns (uint256) {
+    function registerUser(string memory tokenUri) public returns (uint256) {
         require(!userExists(msg.sender), "User is already registered");
 
         _tokenIds.increment();
@@ -42,7 +44,7 @@ contract User is ERC721 {
         //Reward user points for creating a profile.
         rewardsContract.addUserPoints(msg.sender, UserPointType.UserRegistered);
 
-        emit UserRegistered(msg.sender, newItemId, firstName, lastName);
+        emit UserRegistered(msg.sender, newItemId, tokenUri);
 
         return newItemId;
     }

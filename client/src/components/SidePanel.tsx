@@ -8,6 +8,12 @@ import AccountsPanel from './panels/AccountsPanel';
 import { PanelsEnum } from '@/enums/PanelsEnum';
 import ContractsPanel from './panels/ContractsPanel';
 import BlockchainPanel from './panels/BlockchainPanel';
+import CreateBookingPanel from './panels/CreateBookingPanel';
+import RegisterPropertyPanel from './panels/RegisterPropertyPanel';
+import RegisterUserPanel from './panels/RegisterUserPanel';
+import ViewBookingPanel from './panels/ViewBookingPanel';
+import ViewPropertyPanel from './panels/ViewPropertyPanel';
+import ViewUserPanel from './panels/ViewUserPanel';
 
 const renderContentComponent = (contentComponent: string, onClose: () => void) => {
   switch (contentComponent) {
@@ -17,6 +23,18 @@ const renderContentComponent = (contentComponent: string, onClose: () => void) =
       return (<ContractsPanel />);
     case PanelsEnum.BlockchainPanel:
       return (<BlockchainPanel />);
+    case PanelsEnum.CreateBookingPanel:
+      return (<CreateBookingPanel />);
+    case PanelsEnum.RegisterPropertyPanel:
+      return (<RegisterPropertyPanel />);
+    case PanelsEnum.RegisterUserPanel:
+      return (<RegisterUserPanel />);
+    case PanelsEnum.ViewBookingPanel:
+      return (<ViewBookingPanel />);
+    case PanelsEnum.ViewPropertyPanel:
+      return (<ViewPropertyPanel />);
+    case PanelsEnum.ViewUserPanel:
+      return (<ViewUserPanel />);
     default:
       return null;
   }
@@ -39,7 +57,7 @@ const SidePanel: React.FC = () => {
 
   return (
     <>
-      {panel && <div className={`fixed top-0 right-0 w-96 h-full bg-gray-50 shadow-2xl transform ${panelStyles}`}>
+      {panel && <div className={`fixed top-0 right-0 w-96 h-full bg-white shadow-2xl transform ${panelStyles}`}>
         <div className='flex flex-col h-full'>
           <div className='bg-blue-100 p-2 flex border-gray-300 border-b-2'>
             <div className='grow'>{panel.title}</div>

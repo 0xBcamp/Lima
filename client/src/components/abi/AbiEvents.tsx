@@ -9,7 +9,7 @@ export const AbiEvents = () => {
     const evmEvents = useAppSelector((state) => state.evmEvent.evmEvents);
 
     const openEventsPanel = () => {
-        console.log('openEventsPanel');
+
     }
 
     return (

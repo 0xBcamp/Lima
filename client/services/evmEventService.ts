@@ -20,13 +20,15 @@ interface IErrorResponse {
 	error: string;
 }
 
+const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+
 export const getEvents = async (): Promise<IEvmEvent[]> => {
-	return (await axios.get(`http://localhost:3000/api/evmevent`)).data;
+	return (await axios.get(`${apiUrl}/api/evmevent`)).data;
 };
 
 export const saveEvent = async (eventData: IEventInput): Promise<IEventResponse> => {
 	try {
-		const response = await axios.post(`http://localhost:3000/api/evmevent`, eventData);
+		const response = await axios.post(`${apiUrl}/api/evmevent`, eventData);
 		const savedEvent: IEvmEvent = response.data;
 
 		return {

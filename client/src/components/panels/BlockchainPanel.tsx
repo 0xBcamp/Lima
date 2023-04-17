@@ -39,22 +39,6 @@ const BlockchainPanel = () => {
                 
             </div>
         </div>
-        // <SidePanel isOpen={isOpen} onClose={onClose} title="Blockchain">
-        //     <div className='flex flex-col'>
-        //         <div className='flex'>
-        //             <div className='grow'>Mine blocks</div>
-        //             <div><input /></div>
-        //             <button onClick={async () => {
-        //                 await provider?.send("evm_mine", []);
-        //             }}>Mine</button>
-        //         </div>
-        //         <div className='flex'>
-        //             <div className='grow'>Block number</div>
-        //             <div>{blockchain.blockNumber}</div>
-        //         </div>
-        //     </div>
-        // </SidePanel>
-
     );
 };
 

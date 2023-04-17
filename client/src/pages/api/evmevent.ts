@@ -28,24 +28,23 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             if (eventName === "UserRegistered") {
                 const data: IUserRegisteredEvent = eventData
 
-                const user = await User.findOne({ owner: data.owner });
-                if (user) {
-                    console.log("User already registered!");
-                    return;
+                const existingUser = await User.findOne({ owner: data.owner });
+                if (existingUser) {
+                    // Update the existing user
+                    const updatedUser = await User.findOneAndUpdate(
+                        { owner: data.owner },
+                        {
+                            $set: {
+                                tokenId: +data.tokenId
+                            },
+                        },
+                        { new: true } // This option returns the updated document
+                    );
                 }
-
-                const newUser: IUser = new User({
-                    firstName: data.firstName,
-                    lastname: data.lastName,
-                    owner: data.owner,
-                    tokenId: +data.tokenId
-                });
-                await newUser.save();
             }
 
             if (eventName === "PropertyRegistered") {
                 const data: IPropertyRegisteredEvent = eventData
-                console.log('data :>> ', data);
                 const user = await User.findOne({ owner: data.owner });
                 if (!user) {
                     console.log("User not found!");
@@ -58,8 +57,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     name: data.name,
                     location: data.location,
                     country: data.country,
-                    uri: data.uri,
+                    imageId: data.imageId,
                     pricePerNight: data.pricePerNight,
+                    description: data.description,
                     user: user._id,
                 });
 
@@ -118,7 +118,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 const user = await findUserWithRetry(data.user);
                 if (!user) {
                     console.log("User not found!");
-                    return;
+                    //return;
                 }
 
                 const newReward: IReward = new Reward({
@@ -126,7 +126,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     points: +data.points,
                     month: +data.month,
                     description: UserPointType[+data.pointType],
-                    userObj: user._id,
+                    userObj: user?._id,
                 });
                 await newReward.save();
 
@@ -183,7 +183,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         return res.status(405).json({ error: 'Method not allowed' });
     }
 
-    async function findUserWithRetry(address: string, maxRetries = 5, delay = 1000) {
+    async function findUserWithRetry(address: string, maxRetries = 5, delay = 2000) {
         let retryCount = 0;
       
         while (retryCount < maxRetries) {

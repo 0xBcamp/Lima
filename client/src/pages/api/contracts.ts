@@ -19,9 +19,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 ];
   const deployedContracts: any[] = [];
 
-  if (req.method === 'GET') {
-    console.log("get contracts");
-    
+  if (req.method === 'GET') {  
     initContractNames.forEach(contract => {
       const data = loadContractData(contract.name);
       

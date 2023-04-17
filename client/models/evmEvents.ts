@@ -14,8 +14,7 @@ export interface IEvmEvent extends Document {
 export interface IUserRegisteredEvent {
   owner: string;
   tokenId: string;
-  firstName: string;
-  lastName: string;
+  tokenUri: string;
 }
 
 export interface IPropertyRegisteredEvent {
@@ -24,8 +23,9 @@ export interface IPropertyRegisteredEvent {
   name: string;
   location: string;
   country: string;
-  uri: string;
+  imageId: string;
   pricePerNight: string;
+  description: string;
 }
 
 export interface IBookingCreatedEvent {

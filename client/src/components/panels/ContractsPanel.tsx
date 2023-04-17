@@ -9,8 +9,6 @@ const ContractsPanel: React.FC = () => {
     const contracts = useAppSelector((state) => state.solContract.contracts);
     const selectedContract = useAppSelector((state) => state.solContract.selectedContract);
 
-    console.log('contracts :>> ', contracts);
-
     return (
         <>
             {contracts && contracts.map((contract, index) => {
