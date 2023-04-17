@@ -3,6 +3,7 @@ pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 import "./User.sol";
 import "./Property.sol";
 import "./Escrow.sol";
@@ -10,7 +11,7 @@ import "./interfaces/IRewards.sol";
 
 import "hardhat/console.sol";
 
-contract Booking is ERC721 {
+contract Booking is ERC721, Ownable {
     using Counters for Counters.Counter;
 
     struct BookingInfo {
@@ -44,7 +45,7 @@ contract Booking is ERC721 {
         usdcTokenAddress = _usdcTokenAddress;
     }
 
-    function setContracts(address _userContractAddress, address _propertyContractAddress, address _escrowContractAddress, address _rewardsContractAddress) external {
+    function setContracts(address _userContractAddress, address _propertyContractAddress, address _escrowContractAddress, address _rewardsContractAddress) external onlyOwner {
         userContract = User(_userContractAddress);
         propertyContract = Property(_propertyContractAddress);
         escrowContract = Escrow(_escrowContractAddress);

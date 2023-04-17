@@ -18,6 +18,9 @@ contract Rewards is Ownable {
     // This mapping stores the total rewards (in USDC) allocated for a specific month.
     mapping(uint256 => uint256) public totalMonthRewards;
 
+    //Only addreses that are whitelisted may add rewards
+    mapping(address => bool) public whitelist;
+
     // This mapping keeps track of whether a user has withdrawn their rewards for a specific month.
     mapping(address => mapping(uint256 => bool)) public userRewardsWithdrawn;
 
@@ -30,6 +33,11 @@ contract Rewards is Ownable {
     // It ensures that users can only withdraw rewards from a completed month.
     modifier onlyCompletedMonth(uint256 month) {
         require(month < block.timestamp / 30 days, "Can only withdraw rewards from a completed month");
+        _;
+    }
+
+    modifier onlyWhitelisted() {
+        require(whitelist[msg.sender], "Not whitelisted");
         _;
     }
 
@@ -52,7 +60,7 @@ contract Rewards is Ownable {
     }
 
     // This function adds points to a user for the current month.
-    function addUserPoints(address user, UserPointType pointType) external {
+    function addUserPoints(address user, UserPointType pointType) external onlyWhitelisted {
         // Get the points for the given pointType
         uint256 points = pointAllocations[pointType];
 
@@ -111,6 +119,11 @@ contract Rewards is Ownable {
 
         // Add the received ether (in wei) to the total rewards for the current month.
         totalMonthRewards[currentMonth] += msg.value;
+    }
+
+    //Adds an address to the whitelist
+    function addToWhitelist(address _address) external onlyOwner {
+        whitelist[_address] = true;
     }
 
     // It calls the addRewards function to ensure the received ether is added to the rewards pool.

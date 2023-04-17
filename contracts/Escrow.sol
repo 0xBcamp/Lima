@@ -2,11 +2,12 @@
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 import "./Property.sol";
 import "./Booking.sol";
 import "./interfaces/IRewards.sol";
 
-contract Escrow {
+contract Escrow is Ownable {
     Property propertyContract;
     Booking bookingContract;
     IRewards rewardsContract;
@@ -26,7 +27,7 @@ contract Escrow {
         usdcToken = IERC20(_usdcTokenAddress);
     }
 
-    function setContracts(address _propertyContractAddress, address _bookingContractAddress, address _rewardsContractAddress) external {
+    function setContracts(address _propertyContractAddress, address _bookingContractAddress, address _rewardsContractAddress) external onlyOwner {
         propertyContract = Property(_propertyContractAddress);
         bookingContract = Booking(_bookingContractAddress);
         rewardsContract = IRewards(_rewardsContractAddress);

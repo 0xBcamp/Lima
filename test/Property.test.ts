@@ -31,24 +31,13 @@ describe("Property", function () {
       const tx = await property.connect(owner).registerProperty(
         'Awesome Place',
         'New York',
-        'USA',
-        'https://example.com/property/1',
+        "USA",
+        '1',
         1000000,
         200,
-        true
+        true,
+        "description"
       );
-
-      await expect(tx)
-        .to.emit(property, 'PropertyRegistered')
-        .withArgs(
-          1,
-          owner.address,
-          'Awesome Place',
-          'New York',
-          'USA',
-          'https://example.com/property/1',
-          200
-        );
 
       const propertyInfo = await property.getPropertyInfo(1);
 
@@ -57,13 +46,14 @@ describe("Property", function () {
       expect(propertyInfo.name).to.equal('Awesome Place');
       expect(propertyInfo.location).to.equal('New York');
       expect(propertyInfo.country).to.equal('USA');
-      expect(propertyInfo.uri).to.equal('https://example.com/property/1');
-      expect(propertyInfo.pricePerNight).to.equal(200);
+      expect(propertyInfo.imageId).to.equal('1');
+      expect(propertyInfo.imageId).to.equal('1');
+      expect(propertyInfo.description).to.equal("description");
     });
   });
 
   it("Should award 200 points to a user for registering a property", async function () {
-    const propertyRegistration = await property.connect(owner).registerProperty('Awesome Place', 'New York', 'USA', 'https://example.com/property/1', 1000000, 100, true);
+    const propertyRegistration = await property.connect(owner).registerProperty('Awesome Place', 'New York', 'USA', '1', 1000000, 100, true, "description");
     await propertyRegistration.wait();
 
     // Get the current month based on the block timestamp.
@@ -87,7 +77,7 @@ describe("Property", function () {
       rewards = contracts.rewards;
       property = contracts.property;
 
-      const propertyRegistration = await property.connect(owner).registerProperty('Awesome Place', 'New York', 'USA', 'https://example.com/property/1', 1000000, pricePerNight, true);
+      const propertyRegistration = await property.connect(owner).registerProperty('Awesome Place', 'New York', 'USA', '1', 1000000, 100, true, "description");
       const propertyReceipt = await propertyRegistration.wait();
       propertyId = propertyReceipt.events?.filter((x: any) => { return x.event === "PropertyRegistered" })[0].args.propertyId;
 

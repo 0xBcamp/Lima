@@ -44,6 +44,12 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   await escrow.setContracts(property.address, booking.address, rewards.address);
   await booking.setContracts(user.address, property.address, escrow.address, rewards.address);
 
+  await rewards.addToWhitelist(property.address);
+  await rewards.addToWhitelist(user.address);
+  await rewards.addToWhitelist(booking.address);
+  await rewards.addToWhitelist(messaging.address);
+  await rewards.addToWhitelist(review.address);
+
   // Save the contract addresses to a JSON file
   const contractAddresses = {
     dummyUSDC: dummyUSDC.address,

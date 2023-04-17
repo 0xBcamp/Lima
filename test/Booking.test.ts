@@ -32,14 +32,14 @@ describe("Booking tests", function () {
     rewards = contracts.rewards;
     escrow = contracts.escrow;
 
-    const ownerRegistration = await user.registerUser("John", "Doe");
+    const ownerRegistration = await user.registerUser("1");
     await ownerRegistration.wait();
 
-    const propertyRegistration = await property.connect(owner).registerProperty('Awesome Place', 'New York', 'USA', 'https://example.com/property/1', 1000000, pricePerNight, true);
+    const propertyRegistration = await property.connect(owner).registerProperty('Awesome Place', 'New York', 'USA', '1', 1000000, 100, true, "description");
     const propertyReceipt = await propertyRegistration.wait();
     propertyId = propertyReceipt.events?.filter((x: any) => { return x.event === "PropertyRegistered" })[0].args.propertyId;
 
-    const account1Registration = await user.connect(account1).registerUser("Jane", "Doe");
+    const account1Registration = await user.connect(account1).registerUser("2");
     await account1Registration.wait();
 
   });
